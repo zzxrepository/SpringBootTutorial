@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- namespace = mapper 对应接口的全限定符 -->
+<mapper namespace="com.zzx.user.repository.mapper.UserMapper">
+    <!-- 声明标签写sql语句  crud  select  insert update  delete
+          每个标签对应接口的一个方法！  方法的一个实现！
+          注意：mapper接口不能重载！！！ 因为mapper.xml无法识别！ 根据方法名识别！
+     -->
+        <!-- 查询所有用户 -->
+        <!-- <select id="queryAllUserInfo" resultType="com.zzx.user.repository.entity.User">-->
+        <!--  我已经把实体包的路径写在了yaml文件的mybatis配置下了，所以下面可以直接写resultType="User"      -->
+        <select id="queryAllUserInfo" resultType="User">
+            SELECT
+            id,
+            user_name,
+            pass_word,
+            age,
+            gender
+            FROM user_info  <!-- 使用带有前缀的表名 -->
+        </select>
+</mapper>

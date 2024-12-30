@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- 父项目配置：使用 Spring Boot 的父项目来简化配置 -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.6</version> <!-- Spring Boot 的版本 -->
+        <relativePath/> <!-- 从仓库中查找父项目 -->
+    </parent>
+
+    <!-- 项目基础信息 -->
+    <groupId>com.zzx</groupId> <!-- 组织标识 -->
+    <artifactId>springboot-mybatis-demo</artifactId> <!-- 项目名称 -->
+    <version>0.0.1-SNAPSHOT</version> <!-- 项目版本 -->
+    <name>springboot-mybatis-demo</name> <!-- 项目名称 -->
+    <description>springboot-mybatis-demo</description> <!-- 项目描述 -->
+
+    <!-- Java 版本配置 -->
+    <properties>
+        <java.version>17</java.version> <!-- 项目使用的 Java 版本 -->
+    </properties>
+
+    <!-- 依赖项配置 -->
+    <dependencies>
+        <!-- MySQL 数据库的 JDBC 驱动 -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope> <!-- 运行时依赖 -->
+        </dependency>
+
+
+        <!-- Spring Boot Starter Data JDBC 依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
+        </dependency>
+
+        <!-- MyBatis 依赖 -->
+        <dependency>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>2.2.2</version>
+        </dependency>
+
+        <!-- Lombok 依赖 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.36</version>
+            <scope>provided</scope> <!-- 可选：标记为 provided -->
+        </dependency>
+
+        <!-- Spring Boot Starter Web 依赖，用于构建 Web 应用 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Spring Boot Starter Test 依赖，用于测试 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope> <!-- 测试范围依赖 -->
+        </dependency>
+    </dependencies>
+
+    <!-- 构建配置 -->
+    <build>
+        <plugins>
+            <!-- Maven 编译插件，用于处理注解处理器（如 Lombok） -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version> <!-- 指定插件版本 -->
+                <configuration>
+                    <source>${java.version}</source> <!-- Java 源代码版本 -->
+                    <target>${java.version}</target> <!-- Java 字节码版本 -->
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.36</version> <!-- 确保版本匹配 -->
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <!-- Spring Boot Maven 插件，用于构建可执行的 Spring Boot JAR -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.1</version> <!-- 确保版本与父项目一致 -->
+                <!-- 不需要排除 Lombok，除非有特定需求 -->
+            </plugin>
+        </plugins>
+    </build>
+</project>

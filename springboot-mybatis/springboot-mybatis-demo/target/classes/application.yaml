@@ -1,0 +1,45 @@
+server:
+  port: 8080
+
+spring:
+  # HikariCP 连接池配置
+  # 参考链接：https://www.cnblogs.com/goloving/p/14884802.html
+  datasource:
+    url: jdbc:mysql://localhost:3306/springboot?useSSL=false&autoReconnect=true&characterEncoding=utf8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: abc123
+    # 指定数据源类型为 HikariDataSource
+    type: com.zaxxer.hikari.HikariDataSource
+    # Hikari 连接池的详细配置
+    hikari:
+      # 连接池名称
+      pool-name: HikariCP
+      # 最小空闲连接数
+      minimum-idle: 5
+      # 空闲连接超时时间（毫秒）
+      idle-timeout: 600000
+      # 连接池的最大大小
+      maximum-pool-size: 10
+      # 是否自动提交事务
+      auto-commit: true
+      # 连接的最大生命周期（毫秒）
+      max-lifetime: 1800000
+      # 连接超时时间（毫秒）
+      connection-timeout: 30000
+      # 测试连接的 SQL 语句
+      connection-test-query: SELECT 1
+
+logging:
+  level:
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
+
+mybatis:
+  # Mapper 文件的位置
+  mapper-locations: classpath:mappers/*Mapper.xml
+  # 实体类的包路径
+  type-aliases-package: com.zzx.user.repository.entity
+  configuration:
+    # 自动下划线转驼峰
+    map-underscore-to-camel-case: true
+
