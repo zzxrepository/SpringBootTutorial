@@ -1,4 +1,6 @@
-# SpringBoot整合Mybatis教程
+> SpringBoot整合Mybatis教程
+
+[toc]
 
 # 1.前言
 
@@ -7,6 +9,7 @@
   - 后端：
     - SpringBoot：2.7.6
     - JDK：17
+    - Mybatis：2.2.2
   - 前端
     - vite：6.0.5
     - vue：3.5.13
@@ -137,6 +140,10 @@
   }
   ```
 
+## 1.3 完整项目文件
+
+- 访问毛毛张Github仓库：https://github.com/zzxrepository/SpringBootTutorial/tree/master/springboot-mybatis
+
 # 2.后端工程搭建
 
 ## 2.1 项目搭建
@@ -144,17 +151,17 @@
 - 如何快速创建一个Maven项目注意的细节可以参看毛毛张的上一篇文章：[【SpringBoot教程】IDEA快速搭建正确的SpringBoot版本和Java版本的项目](https://blog.csdn.net/weixin_48235955/article/details/144807998)
 - 毛毛张在这里选择的`SpringBoot`版本为`2.7.6`，`JDK`选择的是`JDK17`，下面是毛毛张搭建好的整个项目的完整文件夹：
 
-![image-20241229190701198](./assets/image-20241229190701198.png)
+![image-20241229190701198](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241229190701198.png)
 
 - 毛毛张在这里使用的是阿里云的国内源创建的SpringBoot项目，这样才能创建2.7.x的项目，具体原因参见这篇文章：[【SpringBoot教程】IDEA快速搭建正确的SpringBoot版本和Java版本的项目](https://blog.csdn.net/weixin_48235955/article/details/144807998)
 
-![image-20241229193423125](./assets/image-20241229193423125.png)
+![image-20241229193423125](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241229193423125.png)
 
-![image-20241229193549210](./assets/image-20241229193549210.png)
+![image-20241229193549210](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241229193549210.png)
 
 - 创建好之后的项目如下所示，可用把下图中两个没用的文件去掉
 
-![image-20241229193732999](./assets/image-20241229193732999.png)
+![image-20241229193732999](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241229193732999.png)
 
 ## 2.2 导入依赖pom.xml
 
@@ -303,7 +310,7 @@
 
 - 通过Navicat工具创建数据库`springboot`，并执行下面`mysql`语句，创建用户信息表`user_info`
 
-![image-20241229194103478](./assets/image-20241229194103478.png)
+![image-20241229194103478](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241229194103478.png)
 
 - `mysql`语句：
 
@@ -775,7 +782,7 @@ public class SpringbootMybatisDemoApplication {
 
 - 测试类位于`test`文件夹下：
 
-  ![image-20241229192950906](./assets/image-20241229192950906.png)
+  ![image-20241229192950906](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241229192950906.png)
 
 - 测试类代码：
 
@@ -812,7 +819,7 @@ class SpringbootMybatisDemoApplicationTests {
 
 - 使用Postman测试接口
 
-![image-20241229200735053](./assets/image-20241229200735053.png)
+![image-20241229200735053](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241229200735053.png)
 
 > 后端工程的搭建到此结束了，如果只想学习后端的人可以直接到此结束了
 
@@ -838,19 +845,19 @@ class SpringbootMybatisDemoApplicationTests {
   npm create vite@latest
   ```
 
-![image-20241229201059329](./assets/image-20241229201059329.png)
+![image-20241229201059329](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241229201059329.png)
 
 - 输入项目名称后回车，选择`vue`
 
-![image-20241229201142073](./assets/image-20241229201142073.png)
+![image-20241229201142073](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241229201142073.png)
 
 - 然后选择`JavaScripts`
 
-![image-20241229201214296](./assets/image-20241229201214296.png)
+![image-20241229201214296](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241229201214296.png)
 
 - 进入到该目录下，即可看见初始化的项目
 
-![image-20241229201418441](./assets/image-20241229201418441.png)
+![image-20241229201418441](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241229201418441.png)
 
 - 执行如下命令：
 
@@ -866,7 +873,7 @@ class SpringbootMybatisDemoApplicationTests {
 
 - 毛毛张搭建好的前端完整的文件目录如下：
 
-![image-20241229202135283](./assets/image-20241229202135283.png)
+![image-20241229202135283](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241229202135283.png)
 
 ## 3.2 修改配置文件vite.config.js
 
@@ -1121,10 +1128,6 @@ export const useUserStore = defineStore('userStore', {
 
 ```
 
-
-
-
-
 ## 3.7 路由代码
 
 - 文件路径：`/src/router/router.js`
@@ -1234,8 +1237,8 @@ export default instance;
 # 4.源代码
 
 - 源代码可用访问毛毛张的github仓库：
-  - 前端代码：
-  - 后端代码：
+  - 前端代码：https://github.com/zzxrepository/SpringBootTutorial/tree/master/springboot-mybatis/springboot-mybatis-demo-vue
+  - 后端代码：https://github.com/zzxrepository/SpringBootTutorial/tree/master/springboot-mybatis/springboot-mybatis-demo
 
 
 
