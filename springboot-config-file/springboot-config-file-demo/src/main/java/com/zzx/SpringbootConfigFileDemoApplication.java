@@ -1,9 +1,6 @@
 package com.zzx;
 
-import com.zzx.config.ServerConfig;
-import com.zzx.config.User;
-import com.zzx.config.UserConfig;
-import com.zzx.config.WebsiteConfig;
+import com.zzx.config.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -27,6 +24,9 @@ public class SpringbootConfigFileDemoApplication {
 
     @Autowired
     private User user;
+
+    @Autowired
+    private Person person;
 
     public static void main(String[] args) {
         // 通过 SpringApplication 运行应用程序
@@ -62,5 +62,11 @@ public class SpringbootConfigFileDemoApplication {
     public void printUserConfig() {
         System.out.println("配置文件中的值为：");
         System.out.println(user);
+    }
+
+    @PostConstruct
+    public void displayPerson() {
+        // 打印 Person Bean
+        System.out.println("Person Details: " + person);
     }
 }

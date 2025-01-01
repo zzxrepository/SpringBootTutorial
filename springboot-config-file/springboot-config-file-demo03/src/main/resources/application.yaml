@@ -1,0 +1,15 @@
+spring:
+  config:
+    import: application-user-info.yaml
+
+# 作者信息
+author:
+  name: 毛毛张
+  email: 1849975198@qq.com
+
+# 用户信息
+app:
+  user:
+    name: defaultUser
+    email: defaultUser@example.com
+
