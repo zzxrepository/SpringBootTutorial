@@ -1,0 +1,7 @@
+# 配置个人信息
+person:
+  name: "zhangsan"  # 字符串，姓名
+  age: 30  # 数字，年龄
+  address:
+    city: "Beijing"  # 字符串，城市
+    street: "Wangfujing"  # 字符串，街道

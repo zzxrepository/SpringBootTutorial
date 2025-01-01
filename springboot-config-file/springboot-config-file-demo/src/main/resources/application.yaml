@@ -1,0 +1,29 @@
+server:
+  port: 80
+  ip:   127.0.0.1
+  list-server:
+    - BJ-Server
+    - GZ-Server
+  map-server: {bj-server: 192.168.0.2, gz-server: 192.168.0.3}
+  dns:
+    bj: bj.dns.one
+    gz: gz.dns.two
+  arr-port: 8081, 8082
+
+user:
+  username: "john_doe"
+  password: "myPassword123"
+  age: 25
+  balance: 5000.00
+  inviteCode: "ABCD1234"
+  birthDate: "1996-05-15"
+  agreeToTerms: true
+  subscribeToNewsletter: false
+  hobbies:
+    - "篮球"
+    - "跑步"
+    - "读书"
+  email: "john.doe@example.com"  # 添加邮箱属性
+
+person:
+  name: 毛毛张
