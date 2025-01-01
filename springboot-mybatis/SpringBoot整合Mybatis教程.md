@@ -2,6 +2,12 @@
 
 [toc]
 
+- 再看看这个参考文献补充一下内容：
+  - https://zhuanlan.zhihu.com/p/143798465
+  - https://javabetter.cn/springboot/mybatis.html#%E6%95%B4%E5%90%88-mybatis
+
+
+
 # 1.前言
 
 - 今天毛毛张要分享的是SpringBoot整合Mybatis的教程，毛毛张将从前后端分离的方式、通过一个完整的任务来教大家整合的整个过程
@@ -17,11 +23,16 @@
     - pinia：2.3.0
     - axios：1.7.9
 
-## 1.1 任务描述
+## 1.1 Mybatis简介
+
+- MyBatis 是一款优秀的持久层框架，它支持定制化 SQL、存储过程以及高级映射。MyBatis 避免了几乎所有的 JDBC 代码和手动设置参数以及获取结果集。MyBatis 可以使用简单的 XML 或注解来配置和映射原生信息，将接口和 Java 的 POJOs(Plain Ordinary Java Object,普通的 Java对象)映射成数据库中的记录。
+- MyBatis 是支持普通 SQL查询，存储过程和高级映射的优秀持久层框架。MyBatis 消除了几乎所有的JDBC代码和参数的手工设置以及结果集的检索。MyBatis 使用简单的 XML或注解用于配置和原始映射，将接口和 Java 的POJOs（Plain Ordinary Java Objects，普通的 Java对象）映射成数据库中的记录。
+
+## 1.2 任务描述
 
 - 通过SpringBoot整合Mybatis框架，查询数据库所有用户信息，并展示给前端
 
-## 1.2 SpringBoot整合Mybatis概述
+## 1.3 SpringBoot整合Mybatis概述
 
 - 毛毛张首先在这里介绍整合SpringBoot的几个关键点
 
@@ -79,7 +90,14 @@
   import java.util.List;
   
   public interface UserMapper {
+      //方式1：具体的查询语句写在对应的xml文件中（推荐）
       List<User> queryAllUserInfo();
+      
+      //方式2：直接使用注解：
+      /*
+      @Select("SELECT id, user_name, pass_word, age, gender FROM user_info")
+      List<User> queryAllUserInfo();
+      */
   }
   ```
 
@@ -93,8 +111,7 @@
             注意：mapper接口不能重载！！！ 因为mapper.xml无法识别！ 根据方法名识别！
        -->
           <!-- 查询所有用户的mysql语句 -->
-          <!-- <select id="queryAllUserInfo" resultType="com.zzx.user.repository.entity.User">-->
-          <!--  我已经把实体包的路径写在了yaml文件的mybatis配置下了，所以下面可以直接写resultType="User"      -->
+          <!-- 方式1 ：我已经把实体包的路径写在了yaml文件的mybatis配置下了，所以下面可以直接写resultType="User"-->
           <select id="queryAllUserInfo" resultType="User">
               SELECT
               id,
@@ -104,10 +121,25 @@
               gender
               FROM user_info  <!-- 使用带有前缀的表名 -->
           </select>
+      
+      	<!-- 方式2 ：如果没有把实体包的路径写在了yaml文件的mybatis配置下，可以使用如下方式
+      	<!-- <select id="queryAllUserInfo" resultType="com.zzx.user.repository.entity.User">-->
+      	<!--<select id="queryAllUserInfo" resultType="User">      -->
+          <!--   SELECT                                             -->
+          <!--   id,                                                -->
+          <!--   user_name,                                         -->
+          <!--  pass_word,                                          -->
+          <!--   age,                                               -->
+          <!--  gender                                              -->
+          <!--  FROM user_info                                      -->
+          <!-- </select>                                            -->
   </mapper>
   ```
 
-- 然后是在配置文件中编写Mybatis相关的配置：
+- 然后是在配置文件中编写Mybatis相关的配置，主要有两个地方
+
+  - 一个是编写Mybatis框架映射SQL 语句的配置文件`XXXMapper.xml`存放的位置
+  - 另一个是`XXXMapper.xml`对应的实体类的包的名称
 
   ```yaml
   mybatis:
@@ -119,6 +151,28 @@
       # 自动下划线转驼峰
       map-underscore-to-camel-case: true
   ```
+
+> 毛毛张在这里统一写在了`yaml`文件下，对于告诉SpringBoot中`XXXMapper.xml`文件的位置还可以存放在`pom.xml`文件中，方式如下：
+>
+> ```xml
+> <!-- 在 pom.xml文件的build属性中添加如下代码 -->
+> <build>
+>     <resources>
+>         <!--此处的配置是识别到mapper.xml文件，也可以在application.properties中配置-->
+>         <resources>
+>         <resource>
+>             <directory>src/main/java</directory>
+>             <includes>
+>                 <include>**/*.xml</include>
+>             </includes>
+>         </resource>
+>         <resource>
+>             <directory>src/main/resources</directory>
+>         </resource>
+>     </resources>
+>     </resources>
+> </build>
+> ```
 
 - 最后一步，最重要的一步，不要忘记扫描`Mapper`接口所在的包：
 
