@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzx.mapper.ArticleMapper">
+
+    <resultMap id="BaseResultMap" type="com.zzx.entity.Article">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="category" column="category" jdbcType="VARCHAR"/>
+            <result property="tags" column="tags" jdbcType="VARCHAR"/>
+            <result property="articleCover" column="article_cover" jdbcType="VARCHAR"/>
+            <result property="articleTitle" column="article_title" jdbcType="VARCHAR"/>
+            <result property="articleAbstract" column="article_abstract" jdbcType="VARCHAR"/>
+            <result property="articleContent" column="article_content" jdbcType="VARCHAR"/>
+            <result property="isTop" column="is_top" jdbcType="TINYINT"/>
+            <result property="status" column="status" jdbcType="TINYINT"/>
+            <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,category,tags,
+        article_cover,article_title,article_abstract,
+        article_content,is_top,status,
+        is_delete,create_time,update_time
+    </sql>
+
+
+    <!-- 查询所有文章信息 -->
+    <select id="queryAllArticleInfo" resultType="com.zzx.entity.Article">
+        SELECT
+            id,
+            category,
+            tags,
+            article_cover,
+            article_title,
+            article_abstract,
+            article_content,
+            is_top,
+            status,
+            is_delete,
+            create_time,
+            update_time
+        FROM t_article
+        WHERE is_delete = 0
+    </select>
+
+    <!-- 查询文章列表（带分页） -->
+    <select id="selectArticles" resultType="com.zzx.entity.Article">
+        SELECT
+            id,
+            category,
+            tags,
+            article_cover,
+            article_title,
+            article_abstract,
+            article_content,
+            is_top,
+            status,
+            is_delete,
+            create_time,
+            update_time
+        FROM t_article
+        WHERE is_delete = 0
+        ORDER BY create_time DESC
+            LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 查询未删除的文章总数 -->
+    <select id="countArticles" resultType="int">
+        SELECT COUNT(*) FROM t_article WHERE is_delete = 0
+    </select>
+
+</mapper>

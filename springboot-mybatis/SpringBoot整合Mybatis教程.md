@@ -52,15 +52,8 @@
       <artifactId>mysql-connector-java</artifactId>
       <scope>runtime</scope> <!-- 运行时依赖 -->
   </dependency>
-  
-  
-  <!-- Spring Boot Starter Data JDBC 依赖 -->
-  <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jdbc</artifactId>
-  </dependency>
   ```
-
+  
 - 然后是根据数据库编写对应的实体类，比如说用户信息表对应的实体类：
 
   ```java
@@ -219,7 +212,7 @@
 
 ## 2.2 导入依赖pom.xml
 
-- 在整合`Mybatis`的时候很显然的是需要导入`Mybatis`依赖
+- **在整合`Mybatis`的时候很显然的是需要导入`Mybatis`依赖，MyBatis 用于数据库操作，在 Spring Boot 中使用时，也需要导入数据库驱动的依赖，这是很多教程忽略的地方**
 
   ```xml
   <!-- MyBatis 依赖 -->
@@ -228,27 +221,17 @@
       <artifactId>mybatis-spring-boot-starter</artifactId>
       <version>2.2.2</version>
   </dependency>
-  ```
-
-- **MyBatis 用于数据库操作，在 Spring Boot 中使用时，也需要导入 Spring Boot 对数据库的依赖，因为 Spring Boot 要管理数据库连接池、事务等功能，这样 MyBatis 才能在 Spring Boot 环境下正确进行数据库操作，这是很多教程忽略的地方，所以我们还需要在pom文件中导入如下的依赖**
-
-  ```xml
-  <!-- MySQL 数据库的 JDBC 驱动 -->
+  
+  <!-- MySQL驱动 mybatis底层依赖jdbc驱动实现,本次不需要导入连接池,mybatis自带! -->
   <dependency>
       <groupId>mysql</groupId>
       <artifactId>mysql-connector-java</artifactId>
       <scope>runtime</scope> <!-- 运行时依赖 -->
   </dependency>
-  
-  
-  <!-- Spring Boot Starter Data JDBC 依赖 -->
-  <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-starter-data-jdbc</artifactId>
-  </dependency>
   ```
 
 - 对于一个完整的项目来说，为了简化实体类对象的构造方法以及Getter\Setter方法，还需要导入`Lombok`依赖，不熟悉该依赖的可以直接手写；用于测试代码的依赖，毛毛张这里选择的是SpringBoot的`spring-boot-starter-test`，如果熟悉的选择`juint`也行；这是一个前后端分离的项目，还需要导入用于构建`Web`应用的依赖`spring-boot-starter-web`
+
 - 还需要注意的是，毛毛张在这里使用的是SpringBoot默认的连接池`hikari`，而没有选择`Druid`连接池，所以没有导入连接池的依赖，毛毛张后面还会出专门的教程分享这个知识点
 
 - 项目完整的`pom.xml`文件如下：
@@ -288,13 +271,6 @@
               <groupId>mysql</groupId>
               <artifactId>mysql-connector-java</artifactId>
               <scope>runtime</scope> <!-- 运行时依赖 -->
-          </dependency>
-  
-  
-          <!-- Spring Boot Starter Data JDBC 依赖 -->
-          <dependency>
-              <groupId>org.springframework.boot</groupId>
-              <artifactId>spring-boot-starter-data-jdbc</artifactId>
           </dependency>
   
           <!-- MyBatis 依赖 -->

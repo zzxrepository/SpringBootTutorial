@@ -1,0 +1,13 @@
+### Send POST request with json body
+POST http://localhost:11434/api/generate
+Content-Type: application/json
+
+{
+  "model": "qwen2.5:7b",
+  "prompt": "什么是机器学习，20字以内",
+  "stream": false
+}
+
+### GET request with a header
+GET https://httpbin.org/ip
+Accept: application/json

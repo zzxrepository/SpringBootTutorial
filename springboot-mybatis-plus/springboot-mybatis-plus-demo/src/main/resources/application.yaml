@@ -1,13 +1,11 @@
 server:
   port: 8080
-  servlet:
-    context-path: /
 
 spring:
   # HikariCP 连接池配置
   # 参考链接：https://www.cnblogs.com/goloving/p/14884802.html
   datasource:
-    url: jdbc:mysql://localhost:3306/springboot?useSSL=false&autoReconnect=true&characterEncoding=utf8
+    url: jdbc:mysql://localhost:3306/springboot?useSSL=false&autoReconnect=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: abc123
@@ -37,15 +35,26 @@ logging:
     org.springframework.jdbc.core.JdbcTemplate: DEBUG
 
 mybatis-plus:
-  configuration:
-    map-underscore-to-camel-case: true
-    auto-mapping-behavior: full
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  # xml扫描，多个目录用逗号或者分号分隔（告诉 Mapper 所对应的 XML 文件位置）
   mapper-locations: classpath:mapper/*.xml
-  global-config:
-    # 逻辑删除配置
-    db-config:
-      # 删除前
-      logic-not-delete-value: 1
-      # 删除后
-      logic-delete-value: 0
+#  # 以下配置均有默认值,可以不设置
+#  global-config:
+#    db-config:
+#      #主键类型 AUTO:"数据库ID自增" INPUT:"用户输入ID",ID_WORKER:"全局唯一ID (数字类型唯一ID)", UUID:"全局唯一ID UUID";
+#      id-type: auto
+#      #字段策略 IGNORED:"忽略判断"  NOT_NULL:"非 NULL 判断")  NOT_EMPTY:"非空判断"
+#      field-strategy: NOT_EMPTY
+#      #数据库类型
+#      db-type: MYSQL
+#      # 删除前
+#      logic-not-delete-value: 1
+#      # 删除后
+#      logic-delete-value: 0
+  configuration:
+    auto-mapping-behavior: full
+    # 开启驼峰映射
+    map-underscore-to-camel-case: true
+    # 如果查询结果中包含空值的列，则 MyBatis 在映射的时候，不会映射这个字段
+    call-setters-on-nulls: true
+    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
