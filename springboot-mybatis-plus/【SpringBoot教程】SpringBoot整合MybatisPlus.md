@@ -22,7 +22,7 @@
 
 - **MyBatis-Plus是一个MyBatis的增强工具，在 MyBatis 的基础上只做增强不做改变，为简化开发、提高效率而生。它继承了 MyBatis 的所有特性，并且加入了强大的功能，例如自动填充、逻辑删除、乐观锁、性能分析等。 MybatisPlus可以节省大量时间，所有的CRUD代码都可以自动化完成**
 
-![QQ_1735909371149](./assets/QQ_1735909371149.png)
+![QQ_1735909371149](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/QQ_1735909371149.png)
 
 - **特性：**
   - 无侵入：只做增强不做改变，引入它不会对现有工程产生影响，如丝般顺滑
@@ -99,7 +99,7 @@
 
 - 创建完毕的数据库如下图所示（仅部分）：
 
-![QQ_1735911602273](./assets/QQ_1735911602273.png)
+![QQ_1735911602273](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/QQ_1735911602273.png)
 
 ### 1.2.3 导入依赖
 
@@ -107,7 +107,7 @@
 
   - 下面导入的`Mybatis-Plus`依赖和数据库依赖，因此`Mybatis-Plus`是为操作数据库而生，所有我们还要导入数据库相关的依赖。**注意：由于`Mybatis-Plus`有已经整合了`JDBC`相关的依赖，见下图。**
 
-  ![QQ_1735904555062](./assets/QQ_1735904555062.png)
+  ![QQ_1736349519337](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/QQ_1736349519337.png)
 
   ```xml
   <!-- MySQL 连接驱动 -->
@@ -606,7 +606,7 @@ public class SpringbootMybatisPlusDemoApplication {
 
 - 根据`id`查询文章：
 
-![QQ_1735913823820](./assets/QQ_1735913823820.png)
+![QQ_1735913823820](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/QQ_1735913823820.png)
 
 > **如果不是一个完整的前后端分离的项目，能正常启动并测试对了，就相当于`Mybatis-Plus`整合成功了**
 >
@@ -674,6 +674,7 @@ public class SpringbootMybatisPlusDemoApplication {
 
 - 通过以上几个简单的步骤，我们就实现了对`t_article`表的`CRUD`功能，甚至连`XML`文件都不用编写！
 - 从以上步骤中，我们可以看到集成`MyBatis-Plus`非常的简单，只需要引入`starter`工程，并配置`mapper`扫描路径即可，采用`Mybatis-Plus`已经封装好的`CRUD`方法，这个让我们少些很多的增删改查语句，能帮助我们快速上手`SpringBoot`项目
+- 相关的前后端毛毛张已经上传至`Github`：<https://github.com/zzxrepository/SpringBootTutorial/tree/master/springboot-mybatis-plus>
 - 大家入门之后，想要学习更多教程可以参看**官网教程：<https://baomidou.com/>**
 - 下面毛毛张将继续带着大家深入学习以下`Mybatis-Plus`的核心知识点
 
@@ -1581,11 +1582,11 @@ public class MybatisPlusConfig {
 
 - `PostMan`测试：
 
-![QQ_1736338967132](./assets/QQ_1736338967132.png)
+![QQ_1736338967132](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/QQ_1736338967132.png)
 
 - 很多时候我们可以根据别人插件里面返回的对象来设计自己的返回的分页对象：
 
-![QQ_1736339031378](./assets/QQ_1736339031378.png)
+![QQ_1736339031378](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/QQ_1736339031378.png)
 
 
 
@@ -1615,7 +1616,7 @@ public class MybatisPlusConfig {
 
 - 条件构造器类结构：
 
-![](./assets/image_JPU5SqXQMh.png)
+![](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image_JPU5SqXQMh.png)
 
 - Wrapper ： 条件构造抽象类，最顶端父类
 
@@ -1628,7 +1629,7 @@ public class MybatisPlusConfig {
 
 ### 2.4.3 基于QueryWrapper组装条件
 
-![](./assets/image_k_cPdiIiy4.png)
+![](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image_k_cPdiIiy4.png)
 
 组装查询条件：
 
@@ -2128,7 +2129,7 @@ void test4() {
 >
 > **发现2：自动生成的ID值自动回填到我们的Java对象中了。**
 
-![image-20241018171925866](./assets/image-20241018171925866.png)
+![image-20241018171925866](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241018171925866.png)
 
 #### 2.5.3.2 INPUT属性
 
@@ -2181,7 +2182,7 @@ void test4() {
 
 > **结果：**可以发现，**MP是采用我们自定义的ID值的**。
 
-![img](https://i-blog.csdnimg.cn/blog_migrate/ed251860e8efcce88b6052363f0317de.png)
+![img](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/ed251860e8efcce88b6052363f0317de.png)
 
 **(2)不定义ID值测试：**
 
@@ -2203,9 +2204,9 @@ void test4() {
 
  
 
-![img](https://i-blog.csdnimg.cn/blog_migrate/b134e5adca40d344b5c5e4afab633a3d.png)
+![img](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/b134e5adca40d344b5c5e4afab633a3d.png)
 
-![img](https://i-blog.csdnimg.cn/blog_migrate/f253a0a2adad9c49d99723dc69c2c006.png)
+![img](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/f253a0a2adad9c49d99723dc69c2c006.png)
 
 #### 2.5.3.3 AUTO与INPUT对比
 
@@ -2339,7 +2340,7 @@ public class User {
 
 - **步骤一**：**数据库**增加两个属性，**create_time**和**update_time。**
 
-![image-20241018171855066](./assets/image-20241018171855066.png)
+![image-20241018171855066](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241018171855066.png)
 
 - **步骤二**：实体类**字段属性添加注解。**
 
@@ -2406,7 +2407,7 @@ void test9() {
 
 **数据库**
 
-![img](https://i-blog.csdnimg.cn/blog_migrate/8fde395b408acf97a1a7be427e3b1a34.png)
+![img](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/8fde395b408acf97a1a7be427e3b1a34.png)
 
 # 3 MyBatis-Plus高级扩展
 
@@ -2524,7 +2525,7 @@ public void testQuick6(){
 
 **并发问题场景演示:**
 
-![](./assets/image_fmiYphLjW-.png)
+![](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image_fmiYphLjW-.png)
 
 **解决思路: **
 
@@ -2616,7 +2617,7 @@ public void testQuick7(){
 
 - **步骤一：给数据库中增加version字段！**
 
-![image-20241018171834109](./assets/image-20241018171834109.png)
+![image-20241018171834109](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/image-20241018171834109.png)
 
 - **步骤二：实体类添加对应的字段**
 
@@ -2692,9 +2693,9 @@ void testOptimisticLocker() {
 
 **结果：可以发现MP会自动帮我们进行乐观锁判定，并且每修改一次，version就会+1。**
 
-![img](https://i-blog.csdnimg.cn/blog_migrate/efaa1c313be809f2e2c10e631a856ef6.png)
+![img](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/efaa1c313be809f2e2c10e631a856ef6.png)
 
-![img](https://i-blog.csdnimg.cn/blog_migrate/46c03f2729c5fd31348cb1a82ae66052.png)
+![img](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/46c03f2729c5fd31348cb1a82ae66052.png)
 
 **测试2：测试失败情况！多线程下！**
 
@@ -2780,7 +2781,7 @@ void testOptimisticLocker2() {
 
 - `Mybatis-Plus`的配置很多，所以大家遇到没用见过的配置可以查看`Mybatis-Plus`官网：<https://baomidou.com/reference/>
 
-![QQ_1735963292124](./assets/QQ_1735963292124.png)
+![QQ_1735963292124](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/QQ_1735963292124.png)
 
 ## 4.1 使用方式
 
@@ -3085,19 +3086,7 @@ void testOptimisticLocker2() {
 
 # 5 前端工程搭建
 
-- 前端代码编写步骤：
-   * 1.初始化项目：使用 Vite 创建 Vue 项目并进入项目目录。
-   * 2.安装依赖：安装 Pinia、Vue Router、Axios 等必要的依赖。
-   * 3.配置 Vite：编辑 vite.config.js，设置开发服务器和代理。
-   * 4.配置 Axios：在 src/services/axios.js 中创建自定义 Axios 实例，并配置拦截器。
-   * 5.设置 Pinia：创建 src/pinia.js，初始化 Pinia 并在 main.js 中引入。
-   * 6.创建 Store：在 src/store/userStore.js 中定义用户相关的状态和操作。
-   * 7.配置 Router：在 src/router/router.js 中定义路由规则和全局守卫。
-   * 8.编写主入口文件：在 src/main.js 中创建 Vue 应用实例，挂载路由和 Pinia。
-   * 9.创建根组件：编写 src/App.vue，主要负责渲染路由视图。
-   * 10.创建展示组件：编写 src/components/ShowAllUserInfo.vue，展示用户信息并处理加载和错误状态。
-
-## 3.1 前端项目搭建
+## 5.1 前端项目搭建
 
 - 打开vscode，打开控制台，在指定目录下执行下面命令：
 
@@ -3133,9 +3122,9 @@ void testOptimisticLocker2() {
 
 - 毛毛张搭建好的前端完整的文件目录如下：
 
-![QQ_1736348802727](./assets/QQ_1736348802727.png)
+![QQ_1736348802727](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/QQ_1736348802727.png)
 
-## 3.2 修改配置文件vite.config.js
+## 5.2 修改配置文件vite.config.js
 
 ```javascript
 // vite.config.js
@@ -3197,7 +3186,7 @@ export const app = createApp(App)
 app.mount('#app'); // 挂载到 DOM 中的 #app 节点
 ```
 
-## 3.4 修改主页App.vue
+## 5.4 修改主页App.vue
 
 - 文件路径：`src/App.vue`
 
@@ -3231,7 +3220,7 @@ app.mount('#app'); // 挂载到 DOM 中的 #app 节点
 </style>
 ```
 
-## 3.5 分页展示文章信息
+## 5.5 分页展示文章信息
 
 - 文件路径：`src/components/showAllArticleInfo.vue`
 
@@ -3465,7 +3454,7 @@ onMounted(() => {
 </style>
 ```
 
-## 3.6 数据传递与请求发送
+## 5.6 数据传递与请求发送
 
 - 文件路径：`/src/store/pinia.js`
 
@@ -3674,7 +3663,7 @@ export const fetchArticleInfoByPageHelper = (page, pageSize) => {
 };
 ```
 
-## 3.7 路由代码
+## 5.7 路由代码
 
 - 文件路径：`/src/router/router.js`
 
@@ -3723,7 +3712,7 @@ router.afterEach((to, from) => {
 export default router
 ```
 
-## 3.8 请求拦截处理
+## 5.8 请求拦截处理
 
 - 文件路径：`/src/services/axios.js`
 
@@ -3777,17 +3766,15 @@ instance.interceptors.response.use(
 export default instance;
 ```
 
+## 5.9 前端显示效果
+
+![QQ_1736349796232](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/javaweb/QQ_1736349796232.png)
+
 # 6.源代码
 
 - 源代码可用访问毛毛张的github仓库：
-  - 前端代码：
-  - 后端代码：
-
-
-
-
-
-
+  - 前端代码：<https://github.com/zzxrepository/SpringBootTutorial/tree/master/springboot-mybatis-plus/springboot-mybatis-plus-demo-vue>
+  - 后端代码：<https://github.com/zzxrepository/SpringBootTutorial/tree/master/springboot-mybatis-plus/springboot-mybatis-plus-demo>
 
 # 参考文献
 
