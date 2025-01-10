@@ -1,0 +1,13 @@
+# 方式1：通过yaml配置文件的存储日志信息
+## 自定义日志级别
+#logging:
+#  level:
+#    root: info  # 对根目录设置
+#  file:
+#    name: ./logs/mySpring.log   # 配置日志文件名
+#  logback:
+#    rollingpolicy:
+#      max-file-size: 10KB #设置日志大小的最大大小 1KB（一般不会这么小，这里用于演示）
+
+
+# 方式2：通过自定义配置文件的方式，默认放在`src/main/resources/`目录下

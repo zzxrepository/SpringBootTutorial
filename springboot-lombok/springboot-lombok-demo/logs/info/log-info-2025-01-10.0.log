@@ -1,0 +1,29 @@
+2025-01-10 21:08:47.042 [ restartedMain ] - [ INFO  ] [ com.zzx.SpringbootLombokDemoApplication : 55 ] - Starting SpringbootLombokDemoApplication using Java 17.0.11 on flyvideo with PID 2392 (E:\SpringBootTutorial\springboot-lombok\springboot-lombok-demo\target\classes started by flyvideo in E:\SpringBootTutorial\springboot-lombok\springboot-lombok-demo)
+2025-01-10 21:08:47.043 [ restartedMain ] - [ INFO  ] [ com.zzx.SpringbootLombokDemoApplication : 631 ] - No active profile set, falling back to 1 default profile: "default"
+2025-01-10 21:08:47.064 [ restartedMain ] - [ INFO  ] [ o.s.b.d.env.DevToolsPropertyDefaultsPostProcessor : 255 ] - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-01-10 21:08:47.065 [ restartedMain ] - [ INFO  ] [ o.s.b.d.env.DevToolsPropertyDefaultsPostProcessor : 255 ] - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-01-10 21:08:47.471 [ restartedMain ] - [ INFO  ] [ o.s.boot.web.embedded.tomcat.TomcatWebServer : 108 ] - Tomcat initialized with port(s): 8080 (http)
+2025-01-10 21:08:47.472 [ restartedMain ] - [ INFO  ] [ org.apache.catalina.core.AprLifecycleListener : 173 ] - Loaded Apache Tomcat Native library [2.0.7] using APR version [1.7.4].
+2025-01-10 21:08:47.472 [ restartedMain ] - [ INFO  ] [ org.apache.catalina.core.AprLifecycleListener : 173 ] - APR capabilities: IPv6 [true], sendfile [true], accept filters [false], random [true], UDS [true].
+2025-01-10 21:08:47.472 [ restartedMain ] - [ INFO  ] [ org.apache.catalina.core.AprLifecycleListener : 173 ] - APR/OpenSSL configuration: useAprConnector [false], useOpenSSL [true]
+2025-01-10 21:08:47.475 [ restartedMain ] - [ INFO  ] [ org.apache.catalina.core.AprLifecycleListener : 173 ] - OpenSSL successfully initialized [OpenSSL 3.0.13 30 Jan 2024]
+2025-01-10 21:08:47.480 [ restartedMain ] - [ INFO  ] [ org.apache.catalina.core.StandardService : 173 ] - Starting service [Tomcat]
+2025-01-10 21:08:47.480 [ restartedMain ] - [ INFO  ] [ org.apache.catalina.core.StandardEngine : 173 ] - Starting Servlet engine: [Apache Tomcat/9.0.69]
+2025-01-10 21:08:47.510 [ restartedMain ] - [ INFO  ] [ o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] : 173 ] - Initializing Spring embedded WebApplicationContext
+2025-01-10 21:08:47.510 [ restartedMain ] - [ INFO  ] [ o.s.b.w.s.c.ServletWebServerApplicationContext : 292 ] - Root WebApplicationContext: initialization completed in 445 ms
+2025-01-10 21:08:47.669 [ restartedMain ] - [ INFO  ] [ o.s.b.d.autoconfigure.OptionalLiveReloadServer : 59 ] - LiveReload server is running on port 35729
+2025-01-10 21:08:47.685 [ restartedMain ] - [ INFO  ] [ o.s.boot.web.embedded.tomcat.TomcatWebServer : 220 ] - Tomcat started on port(s): 8080 (http) with context path ''
+2025-01-10 21:08:47.691 [ restartedMain ] - [ INFO  ] [ com.zzx.SpringbootLombokDemoApplication : 61 ] - Started SpringbootLombokDemoApplication in 0.874 seconds (JVM running for 1.18)
+2025-01-10 21:09:14.719 [ http-nio-8080-exec-1 ] - [ INFO  ] [ org.apache.tomcat.util.http.parser.Cookie : 173 ] - A cookie header was received [Hm_lvt_2745ad927051c4bc7b7ee34b781df793=1733975673,1734143867,1734961601;] that contained an invalid cookie. That cookie will be ignored.
+ Note: further occurrences of this error will be logged at DEBUG level.
+2025-01-10 21:09:14.728 [ http-nio-8080-exec-1 ] - [ INFO  ] [ o.a.c.core.ContainerBase.[Tomcat].[localhost].[/] : 173 ] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-01-10 21:09:14.728 [ http-nio-8080-exec-1 ] - [ INFO  ] [ org.springframework.web.servlet.DispatcherServlet : 525 ] - Initializing Servlet 'dispatcherServlet'
+2025-01-10 21:09:14.729 [ http-nio-8080-exec-1 ] - [ INFO  ] [ org.springframework.web.servlet.DispatcherServlet : 547 ] - Completed initialization in 1 ms
+2025-01-10 21:09:14.745 [ http-nio-8080-exec-1 ] - [ INFO  ] [ com.zzx.controller.UserController : 18 ] - 我是info级别日志
+2025-01-10 21:09:15.661 [ http-nio-8080-exec-2 ] - [ INFO  ] [ com.zzx.controller.UserController : 18 ] - 我是info级别日志
+2025-01-10 21:09:15.859 [ http-nio-8080-exec-4 ] - [ INFO  ] [ com.zzx.controller.UserController : 18 ] - 我是info级别日志
+2025-01-10 21:09:16.051 [ http-nio-8080-exec-3 ] - [ INFO  ] [ com.zzx.controller.UserController : 18 ] - 我是info级别日志
+2025-01-10 21:09:16.290 [ http-nio-8080-exec-5 ] - [ INFO  ] [ com.zzx.controller.UserController : 18 ] - 我是info级别日志
+2025-01-10 21:09:16.456 [ http-nio-8080-exec-6 ] - [ INFO  ] [ com.zzx.controller.UserController : 18 ] - 我是info级别日志
+2025-01-10 21:09:17.566 [ http-nio-8080-exec-7 ] - [ INFO  ] [ com.zzx.controller.UserController : 18 ] - 我是info级别日志
+2025-01-10 21:09:17.757 [ http-nio-8080-exec-8 ] - [ INFO  ] [ com.zzx.controller.UserController : 18 ] - 我是info级别日志
