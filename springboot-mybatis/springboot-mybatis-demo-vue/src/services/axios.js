@@ -16,6 +16,7 @@ instance.interceptors.request.use(
     config => {
         // 处理请求头，例如添加 Content-Type 或自定义头
         console.log("before request"); // 打印日志，便于调试
+        //告诉服务器请求期望的响应数据类型（即 JSON 格式）。但是，这并不会影响请求体的格式。
         config.headers.Accept = 'application/json, text/plain, text/html,*/*'; // 设置通用的 Accept 请求头
         return config; // 返回配置好的请求对象，继续发送请求
     },
