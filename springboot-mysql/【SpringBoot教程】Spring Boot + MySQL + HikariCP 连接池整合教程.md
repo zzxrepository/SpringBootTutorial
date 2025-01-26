@@ -1,16 +1,10 @@
 
 
-> <font color="green">在前面一篇文章中毛毛张介绍了SpringBoot中数据源与数据库连接池相关概念，今天毛毛张要分享的是关于SpringBoot整合HicariCP连接池相关知识点</font>
+> <font color="green">**在前面一篇文章中毛毛张介绍了SpringBoot中数据源与数据库连接池相关概念，今天毛毛张要分享的是关于SpringBoot整合HicariCP连接池相关知识点以及底层源码分析**</font>
 
 
 
 [toc]
-
-
-
-
-
-
 
 # 1 HicariCP连接池概述
 
@@ -37,7 +31,7 @@
             - `waiters`：等待连接的线程数，使用 `AtomicInteger` 类型。
             - `handoffQueue`：分配数据库连接的核心队列，使用 `SynchronousQueue` 类型，负责将空闲连接分配给请求的线程。
         - 这种设计通过减少线程竞争和优化连接分配，提高了连接池的效率，特别适合高并发的环境。
-- 其他优化
+- **其他优化**
     - **字节码精简**：HikariCP 在字节码上进行了优化，编译后的字节码量极少，这样可以使得更多的代码被 CPU 缓存，从而提高程序的执行效率。减少字节码的大小是提高性能的基础，HikariCP 在这方面做得非常好。
     - **优化代理和拦截器**：HikariCP 对代理和拦截器的实现进行了精简。例如，它的 `Statement` 代理类仅有 100 行代码，是 BoneCP 的十分之一。这减少了性能开销，确保数据库连接池在执行 SQL 时更加高效。
     - **自定义集合类型（FastStatementList）**：为了提高对 `Statement` 的管理效率，HikariCP 使用了自定义的集合类型 `FastStatementList` 来替代传统的 `ArrayList`。这样避免了每次获取元素时的范围检查，并且采用逆序遍历的方式来优化 `remove()` 操作，使得关闭连接时更加高效。
@@ -48,7 +42,18 @@
 
 # 2 快速入门案例
 
-- 案例内容：基于`Spring Boot`，使用`MyBatis-Plus`框架，结合`HikariCP`连接池，查询并展示数据库中的全部用户信息
+- 案例内容：基于`Spring Boot`，使用`MyBatis`框架，结合`HikariCP`连接池，查询并展示数据库中的全部用户信息
+- - 项目版本依赖：
+        - 后端：
+            - SpringBoot：2.7.6
+            - JDK：17
+            - Mybatis：3.0.1
+        - 前端
+            - vite：6.0.5
+            - vue：3.5.13
+            - vue-router：4.5.0
+            - pinia：2.3.0
+            - axios：1.7.9
 
 ## 2.1 后端代码
 
@@ -57,7 +62,7 @@
 - 如何快速创建一个`SpringBoot`新项目可以参见毛毛张的这篇博客：[【SpringBoot教程】IDEA快速搭建正确的SpringBoot版本和Java版本的项目](https://blog.csdn.net/weixin_48235955/article/details/144807998)
 - 下面是毛毛张的完整后端代码文件结构如下图：
 
-![image-20250124224817552](./assets/image-20250124224817552.png)
+![image-20250124224817552](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/tree/image-20250124224817552.png)
 
 ### 2.1.2 导入依赖
 
@@ -98,6 +103,13 @@
         <artifactId>spring-boot-starter-data-jpa</artifactId>
     </dependency>
     
+    <!-- 引入 MyBatis 模块 -->
+    <dependency>
+        <groupId>org.mybatis.spring.boot</groupId>
+        <artifactId>mybatis-spring-boot-starter</artifactId>
+        <version>3.0.1</version>
+    </dependency>
+    
     <!-- 引入 MyBatis Plus 模块 -->
     <dependency>
         <groupId>com.baomidou</groupId>
@@ -110,7 +122,7 @@
 
 - **需要注意的是，在使用 HikariCP 作为连接池的同时，还需要单独导入 MySQL 数据库驱动，通常通过引入 `mysql-connector-java` 依赖来实现**
 
-- **毛毛张在这个任务中为了方便，使用了`Mybatis-plus`框架，整个项目的`pom.xml`文件为：**
+- **毛毛张在这个任务中为了方便，使用了`Mybatis`框架，整个项目的`pom.xml`文件为：**
 
     ```xml
     <?xml version="1.0" encoding="UTF-8"?>
@@ -146,18 +158,17 @@
                 <artifactId>spring-boot-starter-web</artifactId>
             </dependency>
     
-            <!-- MySQL 数据库驱动 -->
+            <!-- MySQL 数据库的 JDBC 驱动 -->
             <dependency>
                 <groupId>mysql</groupId>
                 <artifactId>mysql-connector-java</artifactId>
                 <scope>runtime</scope> <!-- 运行时依赖 -->
             </dependency>
     
-            <!-- MybatisPlus 核心库 -->
             <dependency>
-                <groupId>com.baomidou</groupId>
-                <artifactId>mybatis-plus-boot-starter</artifactId>
-                <version>3.4.2</version>
+                <groupId>org.mybatis.spring.boot</groupId>
+                <artifactId>mybatis-spring-boot-starter</artifactId>
+                <version>3.0.1</version>
             </dependency>
     
             <!-- 热部署 -->
@@ -236,9 +247,8 @@
     server:
       port: 8080
     spring:
-      # HikariCP 连接池配置
       datasource:
-        url: jdbc:mysql://localhost:3306/springboot?useSSL=false&autoReconnect=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&serverTimezone=UTC
+        url: jdbc:mysql://localhost:3306/springboot?useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
         password: abc123
@@ -268,17 +278,14 @@
         org.springframework.jdbc.core.JdbcTemplate: DEBUG
     
     
-    mybatis-plus:
-      # xml扫描，多个目录用逗号或者分号分隔（告诉 Mapper 所对应的 XML 文件位置）
-      mapper-locations: classpath:mapper/*.xml
+    mybatis:
+      # Mapper 文件的位置
+      mapper-locations: classpath:mapper/*Mapper.xml
+      # 实体类的包路径
+      type-aliases-package: com.zzx.entity
       configuration:
-        auto-mapping-behavior: full
-        # 开启驼峰映射
+        # 自动下划线转驼峰
         map-underscore-to-camel-case: true
-        # 如果查询结果中包含空值的列，则 MyBatis 在映射的时候，不会映射这个字段
-        call-setters-on-nulls: true
-        # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
-        log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     ```
 
 ### 2.1.4 初始化数据库并创建对应实体类
@@ -320,11 +327,9 @@
     package com.zzx.entity;
     
     
-    import com.baomidou.mybatisplus.annotation.TableName;
     import lombok.Data;
     
     @Data
-    @TableName("user_info")
     public class User {
         private Integer id;        // 对应数据库中的 `u_id`
         private String userName;   // 对应数据库中的 `u_username`
@@ -332,7 +337,6 @@
         private Integer age;       // 对应数据库中的 `u_age`
         private String gender;     // 对应数据库中的 `u_gender`
     }
-    
     ```
 
 ### 2.1.5 编写响应封装与前端展示VO
@@ -497,21 +501,22 @@
     package com.zzx.controller;
     
     import com.zzx.converter.UserConverter;
+    import com.zzx.entity.User;
     import com.zzx.model.vo.UserInfoVo;
     import com.zzx.reponse.ResVo;
-    import com.zzx.entity.User;
     import com.zzx.service.UserService;
+    import org.springframework.beans.factory.annotation.Autowired;
     import org.springframework.web.bind.annotation.GetMapping;
     import org.springframework.web.bind.annotation.RequestMapping;
     import org.springframework.web.bind.annotation.RestController;
     
-    import javax.annotation.Resource;
     import java.util.List;
+    
     
     @RestController
     @RequestMapping("user")
     public class UserController {
-        @Resource
+        @Autowired
         private UserService userService;
     
         @GetMapping("queryAllUserInfo")  // 使用 GET 请求
@@ -520,8 +525,6 @@
             return ResVo.success(UserConverter.toUserInfoDTOList(userInfoList));
         }
     }
-    
-    
     ```
 
 - `service`层接口`UserService`：
@@ -572,17 +575,15 @@
     package com.zzx.mapper;
     
     
-    import com.baomidou.mybatisplus.core.mapper.BaseMapper;
     import com.zzx.entity.User;
     
     import java.util.List;
     
-    public interface UserMapper extends BaseMapper<User> {
+    public interface UserMapper {
         List<User> queryAllUserInfo();
     }
-    
     ```
-
+    
 - Mapper 层 SQL 映射配置文件`UserMapper.xml`：
 
     ```xml
@@ -683,33 +684,204 @@
 
 - 启动后端程序，可以在浏览器中输入`http://localhost:8080/user/queryAllUserInfo`，返回结果如下则表示后端代码正确无误：
 
-![image-20250125120253993](./assets/image-20250125120253993.png)
+![image-20250125120253993](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/tree/image-20250125120253993.png)
+
+- 同时也能看见控制台输出的使用的连接池为`HikariCP`：
+
+![image-20250126180142644](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/tree/image-20250126180142644.png)
+
+- **完整的后端代码已上传至毛毛张`Github`仓库：<https://github.com/zzxrepository/SpringBootTutorial/tree/master/springboot-mysql/springboot-HicariCP-demo>**
 
 ## 2.2 前端代码
 
-- 前端代码和之前毛毛张介绍的`Mybatis`教程的代码是一样的，毛毛张在这里不做过多的介绍了，感兴趣的可以查看毛毛张的相关博客：
-- 前端展示源码：
+- **前端代码和之前毛毛张介绍的`Mybatis`教程的代码是一样的，毛毛张在这里不做过多的介绍了，感兴趣的可以查看毛毛张的相关博客：[【SpringBoot教程】SpringBoot整合Mybatis - 前后端分离项目 - vue3](https://blog.csdn.net/weixin_48235955/article/details/144818393)**
+- **完整前端代码已上传至毛毛张`Github`仓库：<https://github.com/zzxrepository/SpringBootTutorial/tree/master/springboot-mysql/springboot-mysql-demo-vue>**
 
 
+
+## 2.3 可能会遇到的问题
+
+- 问题1：**MySQL 连接器版本问题**：在 Spring Boot 2.7.6 版本中，MySQL 连接器的版本可以自动推断，但在 Spring Boot 3.x 中，MySQL 连接器的版本需要显式指定，否则会导致构建失败。解决办法是在 `pom.xml` 中显式指定 `mysql-connector-java` 的版本，例如：
+
+    ```xml
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>8.0.30</version>  <!-- 替换为你需要的版本 -->
+        <scope>runtime</scope>
+    </dependency>
+    ```
+
+- 问题2：**`javax.annotation.Resource` 找不到包的问题**：Spring Boot 3.x 版本基于 Spring 6，而 `javax.annotation` 包已不再包含在 Spring 中。此时编译时会出现 `程序包javax.annotation不存在` 的错误。解决办法有两个选择：
+
+    - 方案 1：显式添加`javax.annotation-api`依赖：
+
+        ```xml
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+        ```
+
+    - 方案 2：直接使用 Spring 推荐的`@Autowired`注解替代`@Resource`，因为`@Autowired`是`Spring`的默认注解，且具有更好的兼容性：
+
+- 注意事项：
+
+    - 在 Spring Boot 3.x 版本中，升级了 Spring Framework 到 6.x，因此需要支持 JDK 17 及更高版本的兼容性，部分原本自动包含的库（如 `javax.annotation`）已被移除，需要显式添加相关依赖。
+
+    - 对于依赖注入，建议使用 `@Autowired` 注解来替代 `@Resource`，这是 Spring 推荐的做法，能够更好地与 Spring 的生态系统兼容。
 
 # 3 配置详解
 
-### 2.1.3 编写配置文件
+## 3.1 导入依赖
+
+- 在 Spring Boot 项目中，默认使用 HikariCP 作为数据库连接池，因此在大多数情况下无需手动引入该依赖。若项目中使用了以下某些 starter 依赖，`HikariCP` 会自动作为连接池配置：
+    - `spring-boot-starter-jdbc`
+    - `spring-boot-starter-data-jpa`
+    - `mybatis-spring-boot-starter`
+    - `mybatis-plus-boot-starter`
+
+- **需要特别注意的是，`mybatis` 和 `mybatis-plus` 已经间接依赖了 `spring-boot-starter-jdbc`，因此这两个 starter 会自动引入 `HikariCP`，从而避免重复配置。**
+
+#### **方式1：手动导入 `HikariCP` 依赖**
+
+- 如果没有导入`HikariCP`，我们可以通过下面的方式手动导入`HikariCP`依赖
+
+    ```xml
+    <dependency>
+       <groupId>com.zaxxer</groupId>
+       <artifactId>HikariCP</artifactId>
+       <version>6.2.1</version>
+    </dependency>
+    ```
+
+#### 方式 2：自动引入依赖 - 推荐
+
+- 在使用`SpringBoot`默认配置时，不需要手动添加 `HikariCP` 依赖，可以通过导入下面依赖的方式来自动引入`HikariCP`依赖：
+
+    ```xml
+    <!-- 引入 Spring Boot JDBC 模块 -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-jdbc</artifactId>
+    </dependency>
+    
+    <!-- 引入 Spring Boot JPA 模块 -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-data-jpa</artifactId>
+    </dependency>
+    
+    <!-- 引入 MyBatis 模块 -->
+    <dependency>
+        <groupId>org.mybatis.spring.boot</groupId>
+        <artifactId>mybatis-spring-boot-starter</artifactId>
+        <version>3.0.1</version>
+    </dependency>
+    
+    <!-- 引入 MyBatis Plus 模块 -->
+    <dependency>
+        <groupId>com.baomidou</groupId>
+        <artifactId>mybatis-plus-boot-starter</artifactId>
+        <version>3.4.2</version>
+    </dependency>
+    ```
+
+## 3.2 常见配置
 
 - 下面是`HicariCP`连接池常见的配置：
 
     ```yaml
     spring:
-      # HikariCP 连接池配置
-      # 参考链接：https://www.cnblogs.com/goloving/p/14884802.html
       datasource:
-        url: jdbc:mysql://localhost:3306/springboot?useSSL=false&autoReconnect=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&serverTimezone=UTC
+        url: jdbc:mysql://localhost:3306/springboot?useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
         driver-class-name: com.mysql.cj.jdbc.Driver
         username: root
         password: abc123
-        # 指定数据源类型为 HikariDataSource
+        type: com.zaxxer.hikari.HikariDataSource # 指定数据源类型为 HikariDataSource
+        hikari: # Hikari 连接池的详细配置
+          pool-name: HikariCP       # 连接池名称
+          minimum-idle: 5 # 最小空闲连接数
+          idle-timeout: 600000  # 空闲连接超时时间（毫秒）
+          maximum-pool-size: 10 # 连接池的最大大小
+          auto-commit: true # 是否自动提交事务
+          max-lifetime: 1800000 # 连接的最大生命周期（毫秒）
+          connection-timeout: 30000 # 连接超时时间（毫秒）
+          connection-test-query: SELECT 1 # 测试连接的 SQL 语句
+    ```
+    
+- **上面配置主要分为两部分：**
+
+    - **一部分是数据源配置**
+    - **一部分是数据库连接池配置**
+
+
+## 3.3 数据源配置解析
+
+- 下面部分属于数据源配置：
+
+    ```yaml
+    spring:
+      datasource:
+        # 数据库连接URL，指定数据库地址、端口、库名以及连接参数
+        url: jdbc:mysql://localhost:3306/springboot?useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
+        # MySQL 8.0 及以上需要 cj，5.7 以下可去掉 cj
+        driver-class-name: com.mysql.cj.jdbc.Driver 
+        # 数据库的用户名和密码
+        username: root
+        password: abc123
+        # 指定使用的数据库连接池实现
         type: com.zaxxer.hikari.HikariDataSource
-        # Hikari 连接池的详细配置
+    ```
+
+- 配置解析：
+    - **`url`**：定义数据库连接的详细信息，包括：
+        - `localhost:3306`（服务器地址和端口）
+        - `springboot`（数据库名称）
+        - 连接参数
+    - **`driver-class-name`**：指定数据库连接的驱动，MySQL 8.x使用 `com.mysql.cj.jdbc.Driver`
+    - **`username` 和 `password`**：提供访问数据库的身份凭证。
+    - **`type`**：指定数据库连接池的实现，配置为 `com.zaxxer.hikari.HikariDataSource`，表示使用 **HikariCP** 作为数据库连接池。如果需要使用 **Druid**，应将其替换为 `com.alibaba.druid.pool.DruidDataSource`。
+- `url`连接参数详解：
+    - **`useUnicode=true&characterEncoding=UTF-8`**：
+      - 确保数据库与应用之间的字符编码一致，防止乱码问题。
+      - 推荐使用 `utf8mb4` 以支持更多字符（如表情符号）。
+
+    - **`serverTimezone=UTC`**：
+      - 指定数据库服务器的时区，避免时间处理错误。
+      - 可选值：
+        - `UTC`：世界标准时间，比北京时间（CST）早 8 小时。
+        - `Asia/Shanghai`：中国标准时间（推荐）。
+      - **说明**：MySQL 6.0 及以上的 `com.mysql.cj.jdbc.Driver` 需要显式指定时区，否则可能导致时区不匹配的异常。
+
+    - **`useSSL=false`**：
+      - 指定是否启用 SSL 连接。
+      - 在生产环境（如 Linux 服务器部署）通常关闭 SSL 连接，以减少额外的安全配置。
+      - **建议**：在公共网络或云数据库环境中建议开启 SSL。
+
+    - **`autoReconnect=true&failOverReadOnly=false`**：
+      - `autoReconnect=true`：允许 JDBC 驱动在连接意外断开时自动重连（已弃用，推荐使用连接池）。
+      - `failOverReadOnly=false`：防止发生故障转移时连接错误地设置为只读模式。
+
+    - **`allowPublicKeyRetrieval=true`**：
+      - 允许客户端从 MySQL 服务器检索公钥，以进行密码验证。
+      - **安全建议**：生产环境下尽量避免使用该参数，建议启用 SSL 进行安全通信。
+
+    - **`zeroDateTimeBehavior=convertToNull`**：
+      - 当数据库中的日期时间值为 `0000-00-00 00:00:00` 时，转换为 `null`，避免 Java 应用程序在处理无效日期值时出错。
+
+    - **`rewriteBatchedStatements=true`**：
+      - 启用批量执行优化，提高批量 `INSERT`、`UPDATE` 的执行效率。
+      - 适用于大数据量操作，不适用于 `SELECT` 查询。
+
+## 3.4 连接池配置详解
+
+- 下面是关于连接池的配置部分：
+
+    ```yaml
+    spring:
+      datasource:
         hikari:
           # 连接池名称
           pool-name: HikariCP
@@ -727,51 +899,73 @@
           connection-timeout: 30000
           # 测试连接的 SQL 语句
           connection-test-query: SELECT 1
-    
-    logging:
-      level:
-        org.springframework.jdbc.core.JdbcTemplate: DEBUG
     ```
 
-- 更具体的可以看[官方配置](https://github.com/brettwooldridge/HikariCP)或者如下[深蓝Blog总结翻译的配置](http://www.lanxinbase.com/?p=2482)
+- 关于`HikariCP`连接池的详细配置解析如下：
 
-| 属性                      | 描述                                                         | 构造器默认值                   | 默认配置validate之后的值                                     | validate重置                                                 |
-| ------------------------- | ------------------------------------------------------------ | ------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
-| autoCommit                | 自动提交从池中返回的连接                                     | TRUE                           | TRUE                                                         | –                                                            |
-| connectionTimeout         | 等待来自池的连接的最大毫秒数                                 | SECONDS.toMillis(30) = 30000   | 30000                                                        | 如果小于250毫秒，则被重置回30秒                              |
-| idleTimeout               | 连接允许在池中闲置的最长时间 MINUTES.toMillis(10) = 600000   | 600000                         | 如果idleTimeout+1秒>maxLifetime 且 maxLifetime>0，则会被重置为0（代表永远不会退出）；如果idleTimeout!=0且小于10秒，则会被重置为10秒 |                                                              |
-| maxLifetime               | 池中连接最长生命周期                                         | MINUTES.toMillis(30) = 1800000 | 1800000                                                      | 如果不等于0且小于30秒则会被重置回30分钟                      |
-| connectionTestQuery       | 如果您的驱动程序支持JDBC4，我们强烈建议您不要设置此属性      | null                           | null                                                         | –                                                            |
-| minimumIdle               | 池中维护的最小空闲连接数                                     | -1                             | 10                                                           | minIdle<0或者minIdle>maxPoolSize,则被重置为maxPoolSize       |
-| maximumPoolSize           | 池中最大连接数，包括闲置和使用中的连接                       | -1                             | 10                                                           | 如果maxPoolSize小于1，则会被重置。当minIdle<=0被重置为DEFAULT_POOL_SIZE则为10;如果minIdle>0则重置为minIdle的值 |
-| metricRegistry            | 该属性允许您指定一个 Codahale / Dropwizard MetricRegistry 的实例，供池使用以记录各种指标 | null                           | null                                                         | –                                                            |
-| healthCheckRegistry       | 该属性允许您指定池使用的Codahale / Dropwizard HealthCheckRegistry的实例来报告当前健康信息 | null                           | null                                                         | –                                                            |
-| poolName                  | 连接池的用户定义名称，主要出现在日志记录和JMX管理控制台中以识别池和池配置 | null                           | HikariPool-1                                                 | –                                                            |
-| initializationFailTimeout | 如果池无法成功初始化连接，则此属性控制池是否将 fail fast     | 1                              | 1                                                            | –                                                            |
-| isolateInternalQueries    | 是否在其自己的事务中隔离内部池查询，例如连接活动测试         | FALSE                          | FALSE                                                        | –                                                            |
-| allowPoolSuspension       | 控制池是否可以通过JMX暂停和恢复                              | FALSE                          | FALSE                                                        | –                                                            |
-| readOnly                  | 从池中获取的连接是否默认处于只读模式                         | FALSE                          | FALSE –                                                      |                                                              |
-| registerMbeans            | 是否注册JMX管理Bean（MBeans）                                | FALSE                          | FALSE –                                                      |                                                              |
-| catalog                   | 为支持 catalog 概念的数据库设置默认 catalog driver           | default                        | null                                                         | –                                                            |
-| connectionInitSql         | 该属性设置一个SQL语句，在将每个新连接创建后，将其添加到池中之前执行该语句。 | null                           | null                                                         | –                                                            |
-| driverClassName           | HikariCP将尝试通过仅基于jdbcUrl的DriverManager解析驱动程序，但对于一些较旧的驱动程序，还必须指定driverClassName | null                           | null                                                         | –                                                            |
-| transactionIsolation      | 控制从池返回的连接的默认事务隔离级别                         | null                           | null                                                         | –                                                            |
-| validationTimeout         | 连接将被测试活动的最大时间量                                 | SECONDS.toMillis(5) = 5000     | 5000                                                         | 如果小于250毫秒，则会被重置回5秒                             |
-| leakDetectionThreshold    | 记录消息之前连接可能离开池的时间量，表示可能的连接泄漏       | 0                              | 0                                                            | 如果大于0且不是单元测试，则进一步判断：(leakDetectionThreshold < SECONDS.toMillis(2) or (leakDetectionThreshold > maxLifetime && maxLifetime > 0)，会被重置为0 . 即如果要生效则必须>0，而且不能小于2秒，而且当maxLifetime > 0时不能大于maxLifetime |
-| dataSource                | 这个属性允许你直接设置数据源的实例被池包装，而不是让HikariCP通过反射来构造它 | null                           | null                                                         | –                                                            |
-| schema                    | 该属性为支持模式概念的数据库设置默认模式 driver              | default                        | null                                                         | –                                                            |
-| threadFactory             | 此属性允许您设置将用于创建池使用的所有线程的java.util.concurrent.ThreadFactory的实例。 | null                           | null                                                         | –                                                            |
-| scheduledExecutor         | 此属性允许您设置将用于各种内部计划任务的java.util.concurrent.ScheduledExecutorService实例 | null                           | null                                                         | –                                                            |
+|            属性             |                         描述                         |    构造器默认值    |         默认配置 validate 之后的值          |                   validate 重置                    |
+| :-------------------------: | :--------------------------------------------------: | :----------------: | :-----------------------------------------: | :------------------------------------------------: |
+|        `autoCommit`         |               自动提交从池中返回的连接               |       `true`       |                   `true`                    |                        `–`                         |
+|     `connectionTimeout`     |             等待来自池的连接的最大毫秒数             |   `30000` (30秒)   |                   `30000`                   |         如果小于 250 毫秒，则重置为 30 秒          |
+|        `idleTimeout`        |             连接允许在池中闲置的最长时间             | `600000` (10分钟)  | 受 `maxLifetime` 影响，条件不符可能重置为 0 |          如果设置小于 10 秒则重置为 10 秒          |
+|        `maxLifetime`        |                 池中连接最长生命周期                 | `1800000` (30分钟) |                  `1800000`                  |           如果小于 30 秒则重置为 30 分钟           |
+|    `connectionTestQuery`    |           如果支持 JDBC4，建议不设置此属性           |       `null`       |                   `null`                    |                        `–`                         |
+|        `minimumIdle`        |               池中维护的最小空闲连接数               |        `10`        |                    `10`                     | 小于 0 或大于 `maxPoolSize` 则重置为 `maxPoolSize` |
+|      `maximumPoolSize`      |        池中最大连接数，包括闲置和使用中的连接        |        `10`        |                    `10`                     |   如果小于 1，则重置为默认 10 或 `minIdle` 的值    |
+|      `metricRegistry`       |    指定 Codahale/Dropwizard MetricRegistry 的实例    |       `null`       |                   `null`                    |                        `–`                         |
+|    `healthCheckRegistry`    |      指定 Dropwizard HealthCheckRegistry 的实例      |       `null`       |                   `null`                    |                        `–`                         |
+|         `poolName`          |    连接池的用户定义名称，主要用于日志和 JMX 管理     |       `null`       |               `HikariPool-1`                |                        `–`                         |
+| `initializationFailTimeout` |         控制池是否在初始化连接失败时快速失败         |        `1`         |                     `1`                     |                        `–`                         |
+|  `isolateInternalQueries`   |            是否在独立事务中隔离内部池查询            |      `false`       |                   `false`                   |                        `–`                         |
+|    `allowPoolSuspension`    |            是否允许通过 JMX 暂停和恢复池             |      `false`       |                   `false`                   |                        `–`                         |
+|         `readOnly`          |         从池中获取的连接是否默认处于只读模式         |      `false`       |                   `false`                   |                        `–`                         |
+|      `registerMbeans`       |           是否注册 JMX 管理 Bean（MBeans）           |      `false`       |                   `false`                   |                        `–`                         |
+|          `catalog`          |                   设置默认 catalog                   |     `default`      |                   `null`                    |                        `–`                         |
+|     `connectionInitSql`     |            在新连接创建后执行的 SQL 语句             |       `null`       |                   `null`                    |                        `–`                         |
+|      `driverClassName`      |        JDBC URL 解析失败时指定驱动程序类名称         |       `null`       |                   `null`                    |                        `–`                         |
+|   `transactionIsolation`    |                连接的默认事务隔离级别                |       `null`       |                   `null`                    |                        `–`                         |
+|     `validationTimeout`     |                连接测试活动的最大时间                |    `5000` (5秒)    |                   `5000`                    |          如果小于 250 毫秒，则重置为 5 秒          |
+|  `leakDetectionThreshold`   |             检测潜在的连接泄漏的时间阈值             |        `0`         |                     `0`                     |    必须 > 0 且 ≥ 2 秒，且不能大于 `maxLifetime`    |
+|        `dataSource`         |                设置要包装的数据源实例                |       `null`       |                   `null`                    |                        `–`                         |
+|          `schema`           |                   设置默认 schema                    |     `default`      |                   `null`                    |                        `–`                         |
+|       `threadFactory`       |      设置用于创建池线程的 `ThreadFactory` 实例       |       `null`       |                   `null`                    |                        `–`                         |
+|     `scheduledExecutor`     | 设置用于池内部任务的 `ScheduledExecutorService` 实例 |       `null`       |                   `null`                    |                        `–`                         |
 
-
+- 更具体的可以看[官方配置文档](https://github.com/brettwooldridge/HikariCP)
 
 # 4 底层源码解析
 
+- 前面毛毛张介绍了`HikariCP`连接池的配置，下面毛毛张通过分析源码的方式来介绍以下为什么说`SoringBoot2.x`之后默认使用的连接池是`HikariCP`，从SpringBoot自动初始化配置 和 默认的数据源 两个角度理解。
 
+## 4.1 SpringBoot自动初始化配置
 
+- 找到`spring-boot-autocinfigure-2.7.6.jar`依赖下面的`org.springframework.boot.autoconfigure.jdbc`包
 
+![image-20250125140727917](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/tree/image-20250125140727917.png)
 
+- 关键代码如下：
 
+![image-20250125140535976](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/tree/image-20250125140535976.png)
+
+- 找到`HikariCP`数据源的配置：你可以发现，为了支持动态更新配置（基于MXBean)，这里还设计了一层`HikariConfigMXBean`接口
+
+![image-20250125141106379](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/tree/image-20250125141106379.png)
+
+## 4.2 默认的数据源
+
+- 首先，`springboot-starter-jdbc`中默认加载了`HikariCP`
+
+    ![image-20250125143209056](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/tree/image-20250125143209056.png)
+
+    ![image-20250125143333154](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/tree/image-20250125143333154.png)
+
+- 其次，在配置初始化或者加载时都是第一个被加载的
+
+![image-20250125144401033](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/tree/image-20250125144401033.png)
+
+- **补充**：通过对源码的查看，从 Spring Boot 2.0 版本开始，默认支持四种数据库连接池：**HikariCP**、**Tomcat JDBC Connection Pool**、**DBCP2** 和 **Oracle UCP**。默认情况下，Spring Boot 会优先使用 **HikariCP** 作为连接池，因为 HikariCP 提供了卓越的性能、低延迟和高效的资源利用。如果 classpath 下存在 HikariCP，Spring Boot 会自动将其作为默认的数据库连接池；如果没有 HikariCP，Spring Boot 会依次检测其他连接池的存在，并按照以下顺序选择：
+
+![image-20250126174920618](https://cdn.jsdelivr.net/gh/zzxrepository/image_bed@master/tree/image-20250126174920618.png)
 
 # 参考文献
 

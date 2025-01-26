@@ -1,11 +1,9 @@
 package com.zzx.mapper;
 
-
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zzx.entity.User;
 
 import java.util.List;
 
-public interface UserMapper extends BaseMapper<User> {
+public interface UserMapper {
     List<User> queryAllUserInfo();
 }

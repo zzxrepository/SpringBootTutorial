@@ -1,10 +1,8 @@
 server:
   port: 8080
 spring:
-  # HikariCP 连接池配置
-  # 参考链接：https://www.cnblogs.com/goloving/p/14884802.html
   datasource:
-    url: jdbc:mysql://localhost:3306/springboot?useSSL=false&autoReconnect=true&characterEncoding=utf8&allowPublicKeyRetrieval=true&serverTimezone=UTC
+    url: jdbc:mysql://localhost:3306/springboot?useSSL=false&autoReconnect=true&useUnicode=true&characterEncoding=UTF-8&allowPublicKeyRetrieval=true&serverTimezone=UTC
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: abc123
@@ -34,14 +32,11 @@ logging:
     org.springframework.jdbc.core.JdbcTemplate: DEBUG
 
 
-mybatis-plus:
-  # xml扫描，多个目录用逗号或者分号分隔（告诉 Mapper 所对应的 XML 文件位置）
-  mapper-locations: classpath:mapper/*.xml
+mybatis:
+  # Mapper 文件的位置
+  mapper-locations: classpath:mapper/*Mapper.xml
+  # 实体类的包路径
+  type-aliases-package: com.zzx.entity
   configuration:
-    auto-mapping-behavior: full
-    # 开启驼峰映射
+    # 自动下划线转驼峰
     map-underscore-to-camel-case: true
-    # 如果查询结果中包含空值的列，则 MyBatis 在映射的时候，不会映射这个字段
-    call-setters-on-nulls: true
-    # 这个配置会将执行的sql打印出来，在开发或测试的时候可以用
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

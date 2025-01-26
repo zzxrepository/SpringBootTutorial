@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zzx.mapper.UserMapper">
+    <!-- 声明标签写sql语句  crud  select  insert update  delete
+          每个标签对应接口的一个方法！  方法的一个实现！
+          注意：mapper接口不能重载！！！ 因为mapper.xml无法识别！ 根据方法名识别！
+     -->
+    <!-- 查询所有用户 -->
+    <select id="queryAllUserInfo" resultType="com.zzx.entity.User">
+        SELECT id, user_name, pass_word, age, gender FROM user_info
+    </select>
+
+</mapper>

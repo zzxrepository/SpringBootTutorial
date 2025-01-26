@@ -34,24 +34,16 @@
             <scope>runtime</scope> <!-- 运行时依赖 -->
         </dependency>
 
-        <!--引入druid数据源 1.1.10 此版本的数据监控中心可以直接使用-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
-            <version>1.1.10</version>
+            <version>1.2.18</version>
         </dependency>
-        <!--druid数据源 1.1.21 此版本的数据监控中心增加了登录界面需要增加配置类-->
-<!--        <dependency>-->
-<!--            <groupId>com.alibaba</groupId>-->
-<!--            <artifactId>druid-spring-boot-starter</artifactId>-->
-<!--            <version>1.1.21</version>-->
-<!--        </dependency>-->
 
-        <!-- MybatisPlus 核心库 -->
         <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.4.2</version>
+            <groupId>org.mybatis.spring.boot</groupId>
+            <artifactId>mybatis-spring-boot-starter</artifactId>
+            <version>3.0.1</version>
         </dependency>
 
         <dependency>
@@ -73,6 +65,7 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -97,6 +90,8 @@
                     <encoding>UTF-8</encoding>
                 </configuration>
             </plugin>
+
+            <!--    SpringBoot应用打包插件-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -116,5 +111,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
