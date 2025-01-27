@@ -40,20 +40,21 @@
 
 > 接下来毛毛张将结合一个完整的项目案例来介绍`SpringBoot`整合
 
-# 2 快速入门案例
+# 2 入门使用教程
 
 - 案例内容：基于`Spring Boot`，使用`MyBatis`框架，结合`HikariCP`连接池，查询并展示数据库中的全部用户信息
-- - 项目版本依赖：
-        - 后端：
-            - SpringBoot：2.7.6
-            - JDK：17
-            - Mybatis：3.0.1
-        - 前端
-            - vite：6.0.5
-            - vue：3.5.13
-            - vue-router：4.5.0
-            - pinia：2.3.0
-            - axios：1.7.9
+- 项目版本依赖：
+  - 后端：
+    - SpringBoot：2.7.6
+    - JDK：17
+    - Mybatis：3.0.1
+  - 前端
+    - vite：6.0.5
+    - vue：3.5.13
+    - vue-router：4.5.0
+    - pinia：2.3.0
+    - axios：1.7.9
+
 
 ## 2.1 后端代码
 
