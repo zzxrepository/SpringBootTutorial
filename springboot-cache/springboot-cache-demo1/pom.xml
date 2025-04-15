@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- 定义 POM 模型的版本，固定为 4.0.0 -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.zzx</groupId>
+    <artifactId>springboot-cache-demo1</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>springboot-cache-demo1</name>
+    <description>springboot-cache-demo1</description>
+
+    <!-- 定义项目的父项目，继承父项目的配置和依赖管理 -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-parent</artifactId>
+        <version>2.7.6</version>
+    </parent>
+
+    <!-- 定义项目的属性，可在 POM 中引用 -->
+    <properties>
+        <java.version>1.8</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <spring-boot.version>2.7.6</spring-boot.version>
+    </properties>
+    <!-- 定义项目的依赖项 -->
+    <dependencies>
+        <!-- Spring Boot Web 启动器依赖，用于创建基于 Spring Boot 的 Web 应用 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Spring Boot 缓存启动器依赖，用于支持 Spring Boot 的缓存功能 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <!-- Caffeine 缓存库依赖，Spring Boot 缓存的一个实现 -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+
+        <!-- Lombok 依赖，用于减少 Java 代码中的样板代码，如 getter、setter 等 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <!-- optional 为 true 表示该依赖不会传递给依赖本项目的其他项目 -->
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <!-- 依赖管理部分，用于统一管理依赖的版本 -->
+    <dependencyManagement>
+        <dependencies>
+            <!-- 引入 Spring Boot 依赖管理 POM，确保依赖的版本一致性 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <!-- 使用之前定义的 Spring Boot 版本号 -->
+                <version>${spring-boot.version}</version>
+                <!-- 依赖类型为 POM -->
+                <type>pom</type>
+                <!-- 导入范围，表示导入该 POM 的依赖管理 -->
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <!-- Spring Boot Maven 插件，用于打包和运行 Spring Boot 应用 -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
+                <configuration>
+                    <mainClass>com.zzx.SpringbootCacheDemo1Application</mainClass>
+                    <skip>true</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

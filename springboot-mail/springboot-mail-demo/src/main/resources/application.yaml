@@ -1,0 +1,33 @@
+# 服务端口
+server:
+  port: 8080
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB       # 单个文件最大限制
+      max-request-size: 50MB    # 整个请求的最大限制
+  # ================= 邮件服务配置 =================
+  mail:
+    host: smtp.qq.com                  # QQ邮箱SMTP服务器
+    port: 465                           # SSL加密端口
+    protocol: smtp                      # 使用协议
+    default-encoding: UTF-8             # 编码格式
+    username: 1849975198@qq.com         # 发件邮箱
+    password: gkezkbdlgpmeeijb          # 邮箱授权码（非登录密码）
+    properties:
+      mail:
+        smtp:
+          auth: true                    # 必须开启认证
+          connectiontimeout: 5000      # 连接超时(ms)
+          timeout: 5000                # IO超时(ms)
+          writetimeout: 5000           # 写超时(ms)
+          ssl:
+            enable: true                # 强制开启SSL (QQ邮箱要求)
+            required: true             # 必须使用SSL
+
+  freemarker:
+    template-loader-path: classpath:/templates/
+    suffix: .ftl
+    charset: UTF-8
+    content-type: text/html

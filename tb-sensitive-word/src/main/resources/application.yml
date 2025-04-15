@@ -1,0 +1,43 @@
+#配置启动端口
+server:
+  port: 1010
+  #配置项目路径
+  servlet:
+    context-path: /tb-sensitive-word
+
+spring:
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    connection-timeout: 5000
+    database: 5
+    lettuce:
+      pool:
+        # 连接池最大连接数（默认8，使用负值表示没有限制）
+        max-active: 20
+        # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: 1000
+        # 连接池中的最大空闲连接（默认8）
+        max-idle: 8
+        # 连接池中的最小空闲连接（默认0）
+        min-idle: 0
+
+
+
+  #数据库配置
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss # 时间格式
+    time-zone: Asia/Shanghai         # 时区
+  #标记容器是否应该在web应用程序启动的时候就加载这个servlet
+  mvc:
+    servlet:
+      load-on-startup: 1
+
+# Mybatis SQL打印 （方法、接口所在的包，不是mapper.xmls所在的包）
+logging:
+  level:
+    com.tanb.seckill.mapper: debug
+
+
+

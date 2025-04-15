@@ -23,6 +23,7 @@
     <!-- Java 版本配置 -->
     <properties>
         <java.version>17</java.version> <!-- 项目使用的 Java 版本 -->
+        <spring-boot.version>2.7.6</spring-boot.version>
     </properties>
 
     <!-- 依赖项配置 -->
@@ -85,10 +86,23 @@
             </plugin>
 
             <!-- Spring Boot Maven 插件，用于构建可执行的 Spring Boot JAR -->
+            <!--    SpringBoot应用打包插件-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <version>2.7.1</version> <!-- 确保版本与父项目一致 -->
+                <version>${spring-boot.version}</version>
+                <configuration>
+                    <mainClass>com.zzx.SpringbootMybatisDemoApplication</mainClass>
+                    <skip>true</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>repackage</id>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

@@ -1,0 +1,12 @@
+# 应用服务 WEB 访问端口
+server:
+  port: 8080
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: caches,health,metrics
+    cache:
+      enabled: true
