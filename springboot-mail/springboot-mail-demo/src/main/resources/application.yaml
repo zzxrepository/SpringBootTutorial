@@ -13,8 +13,8 @@ spring:
     port: 465                           # SSL加密端口
     protocol: smtp                      # 使用协议
     default-encoding: UTF-8             # 编码格式
-    username: 1849975198@qq.com         # 发件邮箱
-    password: gkezkbdlgpmeeijb          # 邮箱授权码（非登录密码）
+    username: abc123456@qq.com         # 发件邮箱
+    password: gk**************          # 邮箱授权码（非登录密码）
     properties:
       mail:
         smtp:

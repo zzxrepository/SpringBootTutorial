@@ -154,7 +154,7 @@ public void testTransaction() {
 
 > 从上述代码可以看出，**使用编程式事务更加灵活，但写法比较麻烦**，因此，实际应用中很少使用，但是对于你理解 Spring 事务管理原理有帮助。
 
-## 2.2 声明式事务管理
+## 2.2 声明式事务管理（推荐）
 
 - 声明式事务管理推荐使用，因为代码侵入性最小，实际是通过 AOP 实现（基于`@Transactional` 的全注解方式使用最多）。
 
@@ -193,10 +193,6 @@ public void testTransaction() {
 - 参数的设置方法如下：
 
 ![image (4)](./assets/image%20(4).png)
-
-
-
-
 
 ## 2.3 Spring事务管理接口介绍
 
@@ -473,8 +469,6 @@ Class B {
 
 这里还是简单举个例子：如果 `bMethod()` 回滚的话，`aMethod()`不会回滚。如果 `aMethod()` 回滚的话，`bMethod()`会回滚。
 
-
-
 ```java
 @Service
 Class A {
@@ -508,13 +502,9 @@ Class B {
 - **`TransactionDefinition.PROPAGATION_NOT_SUPPORTED`**: 以非事务方式运行，如果当前存在事务，则把当前事务挂起。
 - **`TransactionDefinition.PROPAGATION_NEVER`**: 以非事务方式运行，如果当前存在事务，则抛出异常。
 
-
-
 #### 2.3.3.2 事务隔离级别
 
 `TransactionDefinition` 接口中定义了五个表示隔离级别的常量：
-
-
 
 ```java
 public interface TransactionDefinition {
@@ -529,8 +519,6 @@ public interface TransactionDefinition {
 ```
 
 和事务传播行为那块一样，为了方便使用，Spring 也相应地定义了一个枚举类：`Isolation`
-
-
 
 ```java
 public enum Isolation {
@@ -799,8 +787,6 @@ private void method1() {
 
 简单来说，数据库事务可以保证多个对数据库的操作（也就是 SQL 语句）构成一个逻辑上的整体。构成这个逻辑上的整体的这些数据库操作遵循：**要么全部执行成功,要么全部不执行** 。
 
-
-
 ```mysql
 # 开启一个事务
 START TRANSACTION;
@@ -981,7 +967,7 @@ MySQL 命令行的默认配置中事务都是自动提交的，即执行 SQL 语
 SET [SESSION|GLOBAL] TRANSACTION ISOLATION LEVEL [READ UNCOMMITTED|READ COMMITTED|REPEATABLE READ|SERIALIZABLE]
 ```
 
-我们再来看一下我们在下面实际操作中使用到的一些并发控制语句:
+我们再来看一下我们在下面实际操作中使用到的一些并发控制语句：
 
 - `START TRANSACTION` |`BEGIN`：显式地开启一个事务。
 - `COMMIT`：提交事务，使得对数据库做的所有修改成为永久性。
@@ -1026,13 +1012,11 @@ SET [SESSION|GLOBAL] TRANSACTION ISOLATION LEVEL [READ UNCOMMITTED|READ COMMITTE
   - **在可重复读的事务级别下给事务操作的这张表添加 `Next-key Lock（Record Lock+Gap Lock）`**：Next-key Lock 是记录锁（Record Lock）和间隙锁（Gap Lock）的组合，在可重复读事务级别下使用。它不仅锁住记录本身，还锁住记录之间的间隙，防止其他事务在间隙范围内插入数据，有效避免幻读，同时相对表锁，对并发性能的影响较小 。
   - **利用 MVCC 机制（多版本并发控制）：在可重复读的隔离级别下，MVCC 机制为每个事务维护一个快照**。事务在读取数据时，只能读取到快照中的数据，不会读取到其他事务插入的数据，从而避免幻读。这种方式通过多版本控制，减少了锁的使用，提高了并发性能，是一种较为常用的解决幻读的方式。
 
-
-
 ## 4.5 ACID 靠什么保证的呢？
 
 MySQL 通过事务、undo log、redo log 来确保 ACID。
 
-![二哥的 Java 进阶之路：ACID 的保证机制](https://cdn.tobebetterjavaer.com/stutymore/mysql-20230919103025.png)
+<img src="https://cdn.tobebetterjavaer.com/stutymore/mysql-20230919103025.png" alt="二哥的 Java 进阶之路：ACID 的保证机制" style="zoom:50%;" />
 
 ### 4.5.1 如何保证原子性？
 
@@ -1691,6 +1675,324 @@ public class User2ServiceImpl implements User2Service {
 我们注意到`addRecord()`方法中`propagation = Propagation.NOT_SUPPORTED`，因为对于日志无所谓精确，可以多一条也可以少一条，所以`addRecord()`方法本身和外围`addPoint()`方法抛出异常都不会使`addRecord()`方法回滚，并且`addRecord()`方法抛出异常也不会影响外围`addPoint()`方法的执行。
 
 通过这个例子相信大家对事务传播行为的使用有了更加直观的认识，通过各种属性的组合确实能让我们的业务实现更加灵活多样。
+
+# 6.Spring事务八股
+
+Spring 事务的本质其实就是数据库对事务的支持，没有数据库的事务支持，Spring 是无法提供事务功能的。Spring 只提供统一事务管理接口，具体实现都是由各数据库自己实现，数据库事务的提交和回滚是通过数据库自己的事务机制实现。
+
+### Spring 事务的种类？
+
+在 Spring 中，事务管理可以分为两大类：声明式事务管理和编程式事务管理。
+
+#### 介绍一下编程式事务管理？
+
+编程式事务可以使用TransactionTemplate和PlatformTransactionManager来实现，需要显式执行事务。允许我们在代码中直接控制事务的边界，通过编程方式明确指定事务的开始、提交和回滚。
+
+```java
+public class AccountService {
+    private TransactionTemplate transactionTemplate;
+
+    public void setTransactionTemplate(TransactionTemplate transactionTemplate) {
+        this.transactionTemplate = transactionTemplate;
+    }
+
+    public void transfer(final String out, final String in, final Double money) {
+        transactionTemplate.execute(new TransactionCallbackWithoutResult() {
+            @Override
+            protected void doInTransactionWithoutResult(TransactionStatus status) {
+                // 转出
+                accountDao.outMoney(out, money);
+                // 转入
+                accountDao.inMoney(in, money);
+            }
+        });
+    }
+}
+```
+
+在上面的代码中，**我们使用了 TransactionTemplate 来实现编程式事务，通过execute方法来执行事务**，这样就可以在方法内部实现事务的控制。
+
+#### 介绍一下声明式事务管理？
+
+声明式事务是建立在 AOP 之上的。其本质是通过 AOP 功能，对方法前后进行拦截，将事务处理的功能编织到拦截的方法中，也就是在目标方法开始之前启动一个事务，在目标方法执行完之后根据执行情况提交或者回滚事务。
+
+相比较编程式事务，优点是不需要在业务逻辑代码中掺杂事务管理的代码，Spring推荐通过@Transactional注解的方式来实现声明式事务管理，也是日常开发中最常用的。
+
+不足的地方是，**声明式事务管理最细粒度只能作用到方法级别，无法像编程式事务那样可以作用到代码块级别。**
+
+```java
+@Service
+public class AccountService {
+    @Autowired
+    private AccountDao accountDao;
+
+    @Transactional
+    public void transfer(String out, String in, Double money) {
+        // 转出
+        accountDao.outMoney(out, money);
+        // 转入
+        accountDao.inMoney(in, money);
+    }
+}
+```
+
+#### 说说两者的区别？
+
+- **编程式事务管理**：需要在代码中显式调用事务管理的 API 来控制事务的边界，比较灵活，但是代码侵入性较强，不够优雅。
+- **声明式事务管理**：这种方式使用 Spring 的 AOP 来声明事务，将事务管理代码从业务代码中分离出来。优点是代码简洁，易于维护。但缺点是不够灵活，只能在预定义的方法上使用事务。
+
+> 1. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的京东同学 10 后端实习一面的原题：Spring 事务怎么实现的
+> 2. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的农业银行面经同学 7 Java 后端面试原题：Spring 如何保证事务
+> 3. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的比亚迪面经同学 12 Java 技术面试原题：Spring的事务用过吗，在项目里面怎么使用的
+> 4. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的虾皮面经同学 13 一面面试原题：spring事务
+> 5. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的阿里云面经同学 22 面经：如何使用spring实现事务
+
+### 说说 Spring 的事务隔离级别？
+
+好，事务的隔离级别定义了一个事务可能受其他并发事务影响的程度。SQL 标准定义了四个隔离级别，Spring 都支持，并且提供了对应的机制来配置它们，定义在 **TransactionDefinition** 接口中。
+
+①、ISOLATION_DEFAULT：使用数据库默认的隔离级别，MySQL 默认的是可重复读，Oracle 默认的读已提交。
+
+②、ISOLATION_READ_UNCOMMITTED：读未提交，允许事务读取未被其他事务提交的更改。这是隔离级别最低的设置，可能会导致“脏读”问题。
+
+③、ISOLATION_READ_COMMITTED：读已提交，确保事务只能读取已经被其他事务提交的更改。这可以防止“脏读”，但仍然可能发生“不可重复读”和“幻读”问题。
+
+④、ISOLATION_REPEATABLE_READ：可重复读，确保事务可以多次从一个字段中读取相同的值，即在这个事务内，其他事务无法更改这个字段，从而避免了“不可重复读”，但仍可能发生“幻读”问题。
+
+⑤、ISOLATION_SERIALIZABLE：串行化，这是最高的隔离级别，它完全隔离了事务，确保事务序列化执行，以此来避免“脏读”、“不可重复读”和“幻读”问题，但性能影响也最大。
+
+> 1. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的华为面经同学 8 技术二面面试原题：Spring 中的事务的隔离级别，事务的传播行为？
+> 2. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的小米面经同学 E 第二个部门 Java 后端技术一面面试原题：spring 的隔离机制，默认是哪一种
+
+### Spring 的事务传播机制？
+
+事务的传播机制**定义了方法在被另一个事务方法调用时的事务行为**，这些行为**定义了事务的边界和事务上下文如何在方法调用链中传播**。
+
+7种事务传播机制/行为：
+
+1. **REQUIRED**：默认机制。若当前无事务，新建事务；若存在事务，则加入该事务。
+
+2. **SUPPORTS**：支持当前事务。若无事务，以非事务方式执行操作。
+
+   ```java
+   public List<ProductDTO> listProducts() {   // 没有 @Transactional
+       return productService.queryAll();      // SUPPORTS
+   }
+   
+   @Service
+   @Transactional(propagation = Propagation.SUPPORTS)
+   public class ProductService {
+       public List<ProductDTO> queryAll() {
+           // SELECT * FROM product ...
+       }
+   }
+   
+   ```
+
+3. **MANDATORY**：必须使用当前事务。若无事务，抛出异常。
+
+4. **REQUIRED_NEW**：始终新建事务。若存在事务，挂起当前事务。
+
+5. **NOT_SUPPORTED**：以非事务方式执行操作，如果当前存在事务，就把当前事务挂起。举例：记录操作日志，不希望和订单一起回滚，执行完毕之后，再恢复外层事务
+
+   ```java
+   // 写订单，要求主逻辑失败则回滚 ↓
+   @Transactional
+   public void placeOrder(OrderDTO order) {
+       orderMapper.insert(order);//如果 insert 抛异常，订单回滚，但日志仍已成功落库。
+       // 记录操作日志，不希望和订单一起回滚
+       logService.writeOperateLog(order);  // NOT_SUPPORTED
+   }
+   
+   @Service
+   @Transactional(propagation = Propagation.NOT_SUPPORTED)
+   public class LogService {
+       public void writeOperateLog(OrderDTO order){ ... }
+   }
+   
+   ```
+
+6. **NEVER** ：以非事务方式执行，如果当前存在事务，则抛出异常。
+
+7. **NESTED**：若存在事务，在事务内嵌套执行；若无事务，行为等同于 `REQUIRED`。
+
+Spring 的默认传播行为是 PROPAGATION_REQUIRED，即如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。
+
+事务传播机制是使用 [ThreadLocal](https://javabetter.cn/thread/ThreadLocal.html) 实现的，所以，如果调用的方法是在新线程中，事务传播会失效。
+
+```java
+@Transactional
+public void parentMethod() {
+    new Thread(() -> childMethod()).start();
+}
+
+public void childMethod() {
+    // 这里的操作将不会在 parentMethod 的事务范围内执行
+}
+```
+
+Spring 默认的事务传播行为是 PROPAFATION_REQUIRED，即如果多个 `ServiceX#methodX()` 都工作在事务环境下，且程序中存在这样的调用链 `Service1#method1()->Service2#method2()->Service3#method3()`，那么这 3 个服务类的 3 个方法都通过 Spring 的事务传播机制工作在同一个事务中。
+
+#### protected 和 private 加事务会生效吗
+
+在 Spring 中，**只有通过 Spring 容器的 AOP 代理调用的公开方法（public method）上的`@Transactional`注解才会生效**。
+
+如果在 protected、private 方法上使用`@Transactional`，这些事务注解将不会生效，原因：Spring 默认使用基于 JDK 的动态代理（当接口存在时）或基于 CGLIB 的代理（当只有类时）来实现事务。这两种代理机制都只能代理公开的方法。
+
+> 1. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的京东同学 10 后端实习一面的原题：事务的传播机制
+> 2. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的小米春招同学 K 一面面试原题：事务传播，protected 和 private 加事务会生效吗,还有那些不生效的情况
+> 3. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的华为面经同学 8 技术二面面试原题：Spring 中的事务的隔离级别，事务的传播行为？
+> 4. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的oppo 面经同学 8 后端开发秋招一面面试原题：讲一下Spring事务传播机制
+> 5. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的阿里云面经同学 22 面经：介绍事务传播模型
+
+### 声明式事务实现原理了解吗？
+
+**Spring 的声明式事务管理是通过 AOP（面向切面编程）和代理机制实现的。**
+
+第一步，**在 Bean 初始化阶段创建代理对象**：
+
+Spring 容器在初始化单例 Bean 的时候，会遍历所有的 BeanPostProcessor 实现类，并执行其 postProcessAfterInitialization 后置处理器方法。
+
+在执行 postProcessAfterInitialization 方法时会遍历容器中所有的切面，查找与当前 Bean 匹配的切面，这里会获取事务的属性切面，也就是 `@Transactional` 注解及其属性值。
+
+然后根据得到的切面创建一个代理对象，默认使用 JDK 动态代理创建代理，如果目标类是接口，则使用 JDK 动态代理，否则使用 Cglib。
+
+第二步，**在执行目标方法时进行事务增强操作**：
+
+当通过代理对象调用 Bean 方法的时候，会触发对应的 AOP 增强拦截器，声明式事务是一种环绕增强，对应接口为`MethodInterceptor`，事务增强对该接口的实现为`TransactionInterceptor`，类图如下：
+
+![图片来源网易技术专栏](https://cdn.tobebetterjavaer.com/tobebetterjavaer/images/sidebar/sanfene/spring-97493c7f-c596-4e98-a6a8-dab254d6d1ab.png)
+
+事务拦截器`TransactionInterceptor`在`invoke`方法中，通过调用父类`TransactionAspectSupport`的`invokeWithinTransaction`方法进行事务处理，包括开启事务、事务提交、异常回滚等。
+
+> 1. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的京东同学 10 后端实习一面的原题：Spring 事务怎么实现的
+
+### 声明式事务在哪些情况下会失效？
+
+Spring Boot通过Spring框架的事务管理模块来支持事务操作。事务管理在Spring Boot中通常是通过 @Transactional 注解来实现的。事务可能会失效的一些常见情况包括以下五种：
+
+#### @Transactional 应用在非public修饰的方法上
+
+如果 Transactional 注解应用在非 public 修饰的方法上，Transactional 将会失效。
+
+是因为在 Spring AOP 代理时，TransactionInterceptor （事务拦截器）在目标方法执行前后进行拦截，DynamicAdvisedInterceptor（CglibAopProxy 的内部类）的 intercept 方法或 JdkDynamicAopProxy 的 invoke 方法会间接调用 AbstractFallbackTransactionAttributeSource 的 **computeTransactionAttribute**方法，获取 Transactional 注解的事务配置信息。
+
+```java
+protected TransactionAttribute computeTransactionAttribute(Method method, Class<?> targetClass) {
+        // Don't allow no-public methods as required.
+        if (allowPublicMethodsOnly() && !Modifier.isPublic(method.getModifiers())) {
+        return null;
+    }
+}
+```
+
+此方法会检查目标方法的修饰符是否为 public，不是 public 则不会获取 @Transactional 的属性配置信息。
+
+#### @Transactional 注解中事务传播行为属性设置错误
+
+- TransactionDefinition.PROPAGATION_SUPPORTS：如果当前存在事务，则加入该事务；如果当前没有事务，则以非事务方式执行；错误使用场景：在业务逻辑必须运行在事务环境下以确保数据一致性的情况下使用 SUPPORTS。
+- TransactionDefinition.PROPAGATION_NOT_SUPPORTED：总是以非事务方式执行，如果当前存在事务，则挂起该事务。错误使用场景：在需要事务支持的操作中使用 NOT_SUPPORTED。
+- TransactionDefinition.PROPAGATION_NEVER：总是以非事务方式执行，如果当前存在事务，则抛出异常。错误使用场景：在应该在事务环境下执行的操作中使用 NEVER。
+
+#### @Transactional 注解中事务回滚属性设置错误
+
+原因是，Spring 默认抛出未检查 unchecked 异常（继承自 RuntimeException 的异常）或者 Error 才回滚事务，其他异常不会触发回滚事务。@Transactional 注解属性 rollbackFor 设置错误。rollbackFor 用来指定能够触发事务回滚的异常类型。
+
+<img src="https://cdn.tobebetterjavaer.com/tobebetterjavaer/images/sidebar/sanfene/spring-04053b02-3264-4d7f-b868-560a0333f08d.png" alt="三分恶面渣逆袭：Spring默认支持的异常回滚" style="zoom:50%;" />
+
+
+
+```java
+// 希望自定义的异常可以进行回滚
+@Transactional(propagation= Propagation.REQUIRED,rollbackFor= MyException.class)
+```
+
+若在目标方法中抛出的异常是 rollbackFor 指定的异常的子类，事务同样会回滚。
+
+#### 异常被捕获处理
+
+![QQ_1746019760262](./assets/QQ_1746019760262.png)
+
+#### 同一个类中方法调用，导致@Transactional 失效
+
+开发中避免不了会对同一个类里面的方法调用，比如有一个类 Test，它的一个方法 A，A 调用本类的方法 B（不论方法 B 是用 public 还是 private 修饰），但方法 A 没有声明注解事务，而 B 方法有。
+
+则外部调用方法 A 之后，方法 B 的事务是不会起作用的。这也是经常犯错误的一个地方。
+
+那为啥会出现这种情况呢？其实还是由 Spring AOP 代理造成的，**因为只有事务方法被当前类以外的代码调用时，才会由 Spring 生成的代理对象来管理。**
+
+```java
+ //@Transactional
+@GetMapping("/test")
+private Integer A() throws Exception {
+    CityInfoDict cityInfoDict = new CityInfoDict();
+    cityInfoDict.setCityName("2");
+    /**
+     * B 插入字段为 3的数据
+     */
+    this.insertB();
+    /**
+     * A 插入字段为 2的数据
+     */
+    int insert = cityInfoDictMapper.insert(cityInfoDict);
+    return insert;
+}
+
+@Transactional()
+public Integer insertB() throws Exception {
+    CityInfoDict cityInfoDict = new CityInfoDict();
+    cityInfoDict.setCityName("3");
+    cityInfoDict.setParentCityId(3);
+
+    return cityInfoDictMapper.insert(cityInfoDict);
+}
+```
+
+这种情况是最常见的一种@Transactional 注解失效场景。
+
+```java
+@Transactional
+private Integer A() throws Exception {
+    int insert = 0;
+    try {
+        CityInfoDict cityInfoDict = new CityInfoDict();
+        cityInfoDict.setCityName("2");
+        cityInfoDict.setParentCityId(2);
+        /**
+         * A 插入字段为 2的数据
+         */
+        insert = cityInfoDictMapper.insert(cityInfoDict);
+        /**
+         * B 插入字段为 3的数据
+        */
+        b.insertB();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
+```
+
+如果 B 方法内部抛了异常，而 A 方法此时 try catch 了 B 方法的异常，那这个事务就不能正常回滚了，会抛出异常：
+
+```java
+org.springframework.transaction.UnexpectedRollbackException: Transaction rolled back because it has been marked as rollback-only
+```
+
+> 1. [Java 面试指南（付费）](https://javabetter.cn/zhishixingqiu/mianshi.html)收录的小米春招同学 K 一面面试原题：事务传播，protected 和 private 加事务会生效吗,还有那些不生效的情况
+
+
+
+
+
+### Spring的事务，使用this调用是否生效？
+
+不能生效。
+
+因为Spring事务是通过代理对象来控制的，只有通过代理对象的方法调用才会应用事务管理的相关规则。当使用`this`直接调用时，是绕过了Spring的代理机制，因此不会应用事务设置。
+
+
+
+
 
 
 

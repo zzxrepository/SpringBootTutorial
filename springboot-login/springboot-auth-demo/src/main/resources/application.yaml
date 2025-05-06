@@ -1,0 +1,8 @@
+# 项目端口号
+server:
+  port: 8080
+#  GitHub认证相关参数
+github:
+  clientId: Ov23liFzf3DxOfkvzUOc
+  clientSecret: fd8c310cd2cb2d332b474fbfa95f348706add840
+  directUrl: http://localhost:8080/oauth/githubCallback

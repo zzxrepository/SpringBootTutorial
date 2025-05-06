@@ -64,10 +64,6 @@
 
 - 后端完整代码毛毛张以及上传至`Github`：<>
 
-
-
-
-
 ## 1.2 依赖配置`pom.xml`
 
 - 下面是实现AOP的核心依赖：
@@ -587,24 +583,15 @@
 
 - 上面代码毛毛张给出了详细的注释，完整的项目代码已经上传至毛毛张Github仓库：<>
 
-# Spring AOP
+# 3.Spring AOP
 
-### 谈谈自己对于 AOP 的了解
+### 1.谈谈自己对于 AOP 的了解
 
-AOP（面向切面编程）是一种编程范式，其核心思想是通过模块化手段将横切关注点（如日志记录、事务管理、权限控制、性能监控等）从业务逻辑中剥离，从而实现关注点分离。
+AOP（面向切面编程）是一种编程范式，其核心思想是**通过模块化手段将横切关注点**（如日志记录、事务管理、权限控制、性能监控等）从业务逻辑中剥离，**从而实现关注点分离**。AOP 是面向对象编程（OOP）的补充和扩展。
 
-这些与核心业务无关但被多个模块共同调用的功能（称为"切面"），通过切面（Aspect）、切点（Pointcut）和通知（Advice）等机制进行封装：切面定义功能模块，切点定位目标方法，通知则描述增强逻辑的执行时机（如方法执行前/后/异常时）。
+这些与核心业务无关但被多个模块共同调用的功能称为"切面"，通过切面（Aspect）、切点（Pointcut）和通知（Advice）等机制进行封装：切面定义功能模块，切点定位目标方法，通知则描述**增强逻辑的执行时机**（如方法执行前/后/异常时）。
 
-这种设计显著减少了系统重复代码，降低了模块耦合度，同时通过集中化管理共通逻辑，为系统的可维护性和可扩展性提供了结构化支持。Spring框架的AOP实现正是这一范式的典型应用，使开发者能够在不侵入业务代码的前提下，灵活地为程序添加通用能力。
-
-1.什么是 AOP ？
-
-AOP 的全称为 Aspect Oriented Programming，译为面向切面编程，是通过预编译方式和运行期动态代理实现核心业务逻辑之外的横切行为的统一维护的一种技术。AOP 是面向对象编程（OOP）的补充和扩展。
-利用 AOP 可以对业务逻辑各部分进行隔离，从而达到降低模块之间的耦合度，并将那些影响多个类的公共行为封装到一个可重用模块，从而到达提高程序的复用性，同时提高了开发效率，提高了系统的可操作性和可维护性。
-
-2.为什么要用 AOP ？
-
-在实际的 Web 项目开发中，我们常常需要对各个层面实现日志记录，性能统计，安全控制，事务处理，异常处理等等功能。如果我们对每个层面的每个类都独立编写这部分代码，那久而久之代码将变得很难维护，所以我们把这些功能从业务逻辑代码中分离出来，聚合在一起维护，而且我们能灵活地选择何处需要使用这些代码。
+**为什么要用 AOP ？**：这种设计显著减少了系统重复代码，降低了模块耦合度，同时通过集中化管理共通逻辑，为系统的可维护性和可扩展性提供了结构化支持。Spring框架的AOP实现正是这一范式的典型应用，**使开发者能够在不侵入业务代码的前提下，灵活地为程序添加通用能力。**
 
 AOP 切面编程涉及到的一些专业术语：
 
@@ -612,21 +599,21 @@ AOP 切面编程涉及到的一些专业术语：
 | :----------------------- | :----------------------------------------------------------- | :----------------------------------------------------------- |
 | **目标 (Target)**        | 被通知的对象，通常是业务逻辑的实现，是我们希望增强的对象。   | 业务逻辑本身，Spring AOP 通过代理模式实现，目标对象是被代理的对象。 |
 | **代理 (Proxy)**         | 向目标对象应用通知后创建的代理对象，用于拦截目标对象的方法调用。 | Spring AOP 使用的代理对象，负责拦截目标对象的方法调用并执行通知逻辑。 |
-| **连接点 (JoinPoint)**   | 目标对象的类中定义的所有方法，都是潜在的拦截点。             | Spring 允许你用通知的地方，方法的前前后后（包括抛出异常）。  |
-| **切入点 (Pointcut)**    | 从连接点中选择特定的点，用于定义哪些连接点会被通知拦截。     | 指定通知到哪个方法，说明“在哪干”。                           |
-| **通知 (Advice)**        | 拦截到连接点后执行的逻辑，分为前置、后置、异常、最终、环绕通知五类。 | 我们要实现的功能，如日志记录、性能统计、事务处理等，说明“什么时候要干什么”。 |
 | **切面 (Aspect)**        | 切入点和通知的结合，表示在哪些连接点执行什么样的通知逻辑。   | 切面就是通知和切入点的结合，定义了“在哪些地方干什么”。       |
+| **连接点 (JoinPoint)**   | 目标对象的类中定义的所有方法，都是潜在的拦截点。             | Spring 允许你用通知的地方，方法的前前后后（包括抛出异常）。  |
+| **切点 (Pointcut)**      | 从连接点中选择特定的点，用于定义哪些连接点会被通知拦截。     | 指定通知到哪个方法，说明“在哪干”。                           |
+| **通知 (Advice)**        | 拦截到连接点后执行的逻辑，分为前置、后置、异常、最终、环绕通知五类。 | 我们要实现的功能，如日志记录、性能统计、事务处理等，说明“什么时候要干什么”。 |
 | **织入 (Weaving)**       | 将通知应用到目标对象，生成代理对象的过程。可以在编译期、类装载期或运行期完成。 | 切点定义了哪些连接点会得到通知，织入是将通知逻辑插入到目标对象的过程。 |
 | **引入 (Introduction)**  | 在运行期为类动态添加方法和字段。                             | 引入是在一个接口/类的基础上引入新的接口或功能，增强类的能力。 |
 | **AOP 代理 (AOP Proxy)** | Spring AOP 使用的代理对象，可以是 JDK 动态代理或 CGLIB 代理。 | 通过代理对目标对象应用切面，代理对象负责拦截目标对象的方法调用并执行通知逻辑。 |
 
-#### 织入有哪几种方式？
+#### 切面织入有哪几种方式？
 
-①、编译期织入：切面在目标类编译时被织入。
+①编译期织入：切面在目标类编译时被织入。
 
-②、类加载期织入：切面在目标类加载到 JVM 时被织入。需要特殊的类加载器，它可以在目标类被引入应用之前增强该目标类的字节码。
+②类加载期织入：切面在目标类加载到 JVM 时被织入。需要特殊的类加载器，它可以在目标类被引入应用之前增强该目标类的字节码。
 
-③、运行期织入：切面在应用运行的某个时刻被织入。一般情况下，在织入切面时，AOP 容器会为目标对象动态地创建一个代理对象。
+③运行期织入：切面在应用运行的某个时刻被织入。一般情况下，在织入切面时，AOP 容器会为目标对象动态地创建一个代理对象。
 
 Spring AOP 采用运行期织入，而 AspectJ 可以在编译期织入和类加载时织入。
 
@@ -634,17 +621,39 @@ Spring AOP 采用运行期织入，而 AspectJ 可以在编译期织入和类加
 >
 > 想象一下，您正在制作一部电影。电影的原始拍摄内容（目标对象）已经完成，但您希望在后期制作中添加一些特效（切面逻辑），比如爆炸、魔法效果等。这些特效并不是原始拍摄的一部分，但它们可以增强电影的视觉效果。
 
+
+
+#### AOP常见注解
+
+- 在配置 AOP 切面之前，我们需要了解下 `aspectj` 相关注解的作用：
+
+  - **@Aspect**：声明该类为一个注解类；
+
+  - **@Pointcut**：定义一个切点，后面跟随一个表达式，表达式可以定义为切某个注解，也可以切某个 package 下的方法；
+
+- 切点定义好后，就是围绕这个切点做文章了：
+
+  - **@Before**: 在切点之前，织入相关代码；
+
+  - **@After**: 在切点之后，织入相关代码;
+
+  - **@AfterReturning**: 在切点返回内容后，织入相关代码，一般用于对返回值做些加工处理的场景；
+
+  - **@AfterThrowing**: 用来处理当织入的代码抛出异常后的逻辑处理;
+
+  - **@Around**: 环绕，可以在切入点前后织入代码，并且可以自由的控制何时执行切点；
+
 #### AOP 有哪些环绕方式？AOP 常见的通知类型有哪些？
 
 AOP 一般有 **5 种**环绕方式：
 
 - 前置通知 (@Before)：目标对象的方法调用之前触发
-- 返回通知 (@AfterReturning)：目标对象的方法调用完成，在返回结果值之后触发
-- 异常通知 (@AfterThrowing)：目标对象的方法运行中抛出 / 触发异常后触发。AfterReturning 和 AfterThrowing 两者互斥。如果方法调用成功无异常，则会有返回值；如果方法抛出了异常，则不会有返回值。
 - 后置通知 (@After)：目标对象的方法调用之后触发
 - 环绕通知 (@Around)：编程式控制目标对象的方法调用。环绕通知是所有通知类型中可操作范围最大的一种，因为它可以直接拿到目标对象，以及要执行的方法，所以环绕通知可以任意的在目标对象的方法调用前后搞事，甚至不调用目标对象的方法
+- 返回通知 (@AfterReturning)：目标对象的方法调用完成，在返回结果值之后触发
+- 异常通知 (@AfterThrowing)：目标对象的方法运行中抛出 / 触发异常后触发。AfterReturning 和 AfterThrowing 两者互斥。如果方法调用成功无异常，则会有返回值；如果方法抛出了异常，则不会有返回值。
 
-![img](https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/aspectj-advice-types.jpg)
+<img src="https://oss.javaguide.cn/github/javaguide/system-design/framework/spring/aspectj-advice-types.jpg" alt="img" style="zoom:50%;" />
 
 #### AspectJ 是什么？
 
@@ -675,9 +684,9 @@ AOP 和 OOP 是互补的编程思想：
 1. OOP 通过类和对象封装数据和行为，专注于核心业务逻辑。
 2. AOP 提供了解决横切关注点（如日志、权限、事务等）的机制，将这些逻辑集中管理。
 
-### 多个切面的执行顺序如何控制？
+### 2.多个切面的执行顺序如何控制？
 
-1、通常使用`@Order` 注解直接定义切面顺序
+**1、通常使用`@Order` 注解直接定义切面顺序**
 
 ```java
 // 值越小优先级越高
@@ -704,17 +713,90 @@ public class LoggingAspect implements Ordered {
 }
 ```
 
-### 说说 JDK 动态代理和 CGLIB 代理？
+### 3.动态代理和静态代理的区别
+
+- 代理是一种常用的设计模式，目的是：为其他对象提供一个代理以控制对某个对象的访问，将两个类的关系解耦。代理类和委托类都要实现相同的接口，因为代理真正调用的是委托类的方法。
+
+- 区别：
+
+  - 静态代理：由程序员创建或者是由特定工具创建，在代码编译时就确定了被代理的类是一个静态代理，静态代理通常只代理一个类
+
+    ```java
+    // 接口
+    interface UserService {
+        void saveUser();
+    }
+    
+    // 目标类
+    class UserServiceImpl implements UserService {
+        public void saveUser() {
+            System.out.println("保存用户");
+        }
+    }
+    
+    // 静态代理类（手动编写）
+    class UserServiceProxy implements UserService {
+        private UserService target;
+    
+        public UserServiceProxy(UserService target) {
+            this.target = target;
+        }
+    
+        public void saveUser() {
+            System.out.println("执行前增强"); // 增强逻辑
+            target.saveUser();               // 调用目标方法
+            System.out.println("执行后增强"); // 增强逻辑
+        }
+    }
+    ```
+
+  - 动态代理：在代码运行期间，运用反射机制动态创建生成，动态代理代理的是一个接口下的多个实现类。
+
+    ```java
+    // 接口和目标类同上（略）
+    
+    // 动态代理处理器
+    class MyInvocationHandler implements InvocationHandler {
+        private Object target;
+    
+        public MyInvocationHandler(Object target) {
+            this.target = target;
+        }
+    
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            System.out.println("执行前增强"); // 增强逻辑
+            Object result = method.invoke(target, args); // 调用目标方法
+            System.out.println("执行后增强"); // 增强逻辑
+            return result;
+        }
+    }
+    
+    // 使用动态代理
+    UserService proxy = (UserService) Proxy.newProxyInstance(
+        UserServiceImpl.class.getClassLoader(),
+        new Class[]{UserService.class},
+        new MyInvocationHandler(new UserServiceImpl())
+    );
+    proxy.saveUser(); // 输出：增强 + 保存用户
+    ```
+
+### 4.说说 JDK 动态代理和 CGLIB 代理？
 
 AOP 是通过动态代理实现的，代理方式有两种：JDK 动态代理和 CGLIB 代理。
 
-①、JDK 动态代理是基于接口的代理，只能代理实现了接口的类。
+**①、JDK 动态代理是基于接口的代理，只能代理实现了接口的类。**
 
 使用 JDK 动态代理时，Spring AOP 会创建一个代理对象，该代理对象实现了目标对象所实现的接口，并在方法调用前后插入横切逻辑。
 
 优点：只需依赖 JDK 自带的 `java.lang.reflect.Proxy` 类，不需要额外的库；缺点：只能代理接口，不能代理类本身。
 
-示例代码：
+**②、CGLIB 动态代理是基于继承的代理，可以代理没有实现接口的类。**使用 CGLIB 动态代理时，**Spring AOP 会生成目标类的子类，并在方法调用前后插入横切逻辑。**
+
+<img src="https://cdn.tobebetterjavaer.com/stutymore/spring-20240321105653.png" alt="图片来源于网络" style="zoom:50%;" />
+
+优点：可以代理没有实现接口的类，灵活性更高；缺点：需要依赖 CGLIB 库，创建代理对象的开销相对较大。
+
+**JDK 动态代理示例代码：**
 
 ```java
 public interface Service {
@@ -756,15 +838,7 @@ public class Main {
 }
 ```
 
-②、CGLIB 动态代理是基于继承的代理，可以代理没有实现接口的类。
-
-使用 CGLIB 动态代理时，Spring AOP 会生成目标类的子类，并在方法调用前后插入横切逻辑。
-
-![图片来源于网络](https://cdn.tobebetterjavaer.com/stutymore/spring-20240321105653.png)
-
-优点：可以代理没有实现接口的类，灵活性更高；缺点：需要依赖 CGLIB 库，创建代理对象的开销相对较大。
-
-示例代码：
+**CGLIB 动态代理示例代码：**
 
 ```java
 public class Service {
@@ -798,18 +872,14 @@ public class Main {
 #### 选择 CGLIB 还是 JDK 动态代理？
 
 - 如果目标对象没有实现任何接口，则只能使用 CGLIB 代理。如果目标对象实现了接口，通常首选 JDK 动态代理。
-- 虽然 CGLIB 在代理类的生成过程中可能消耗更多资源，但在运行时具有较高的性能。对于性能敏感且代理对象创建频率不高的场景，可以考虑使用 CGLIB。
+- 虽然 CGLIB **在代理类的生成过程中可能消耗更多资源，但在运行时具有较高的性能**。对于性能敏感且代理对象创建频率不高的场景，可以考虑使用 CGLIB。
 - JDK 动态代理是 Java 原生支持的，不需要额外引入库。而 CGLIB 需要将 CGLIB 库作为依赖加入项目中。
 
 #### 你会用 JDK 动态代理和 CGLIB 吗？
 
-假设我们有这样一个小场景，客服中转，解决用户问题：
-
-![三分恶面渣逆袭：用户向客服提问题](https://cdn.tobebetterjavaer.com/tobebetterjavaer/images/sidebar/sanfene/spring-c5c4b247-62dd-43a2-a043-da51c58f77c8.png)
-
 ①、JDK 动态代理实现：
 
-![三分恶面渣逆袭：JDK动态代理类图](https://cdn.tobebetterjavaer.com/tobebetterjavaer/images/sidebar/sanfene/spring-65b14a3f-2653-463e-af77-a8875d3d635c.png)
+<img src="https://cdn.tobebetterjavaer.com/tobebetterjavaer/images/sidebar/sanfene/spring-65b14a3f-2653-463e-af77-a8875d3d635c.png" alt="三分恶面渣逆袭：JDK动态代理类图" style="zoom:50%;" />
 
 第一步，创建接口
 
@@ -861,7 +931,7 @@ public class ProxyFactory {
 }
 ```
 
-第五步，客户端：Client，生成一个代理对象实例，通过代理对象调用目标对象方法
+第五步，客户端生成一个代理对象实例，通过代理对象调用目标对象方法
 
 ```java
 public class Client {
@@ -878,7 +948,7 @@ public class Client {
 
 ②、CGLIB 动态代理实现：
 
-![三分恶面渣逆袭：CGLIB动态代理类图](https://cdn.tobebetterjavaer.com/tobebetterjavaer/images/sidebar/sanfene/spring-74da87af-20d1-4a5b-a212-3837a15f0bab.png)
+<img src="https://cdn.tobebetterjavaer.com/tobebetterjavaer/images/sidebar/sanfene/spring-74da87af-20d1-4a5b-a212-3837a15f0bab.png" alt="三分恶面渣逆袭：CGLIB动态代理类图" style="zoom:50%;" />
 
 第一步：定义目标类（Solver），目标类 Solver 定义了一个 solve 方法，模拟了解决问题的行为。目标类不需要实现任何接口，这与 JDK 动态代理的要求不同。
 
@@ -946,27 +1016,26 @@ public class Client {
 }
 ```
 
-### 说说 Spring AOP 和 AspectJ AOP 区别?
+### 5.说说 Spring AOP 和 AspectJ AOP 区别?
 
 1. **实现机制**：
    - **Spring AOP** 是基于 **运行时增强** 的动态代理技术，依赖于 Spring 容器。如果目标对象实现了接口，Spring AOP 使用 **JDK 动态代理**；如果没有实现接口，则使用 **Cglib** 生成目标对象的子类作为代理。
-   - **AspectJ AOP** 是基于 **编译时增强** 的字节码操作技术，通过修改字节码实现静态织入。AspectJ 可以单独使用，也可以与 Spring 集成。
-2. **性能对比**：
-   - Spring AOP 是动态代理，运行时会增加方法调用的栈深度，性能稍逊于 AspectJ。
-   - AspectJ 是静态织入，运行时没有额外开销，性能更优，尤其在切面较多时表现更好。
-3. **功能对比**：
-   - Spring AOP 功能相对简单，主要解决企业级开发中常见的方法织入问题。
-   - AspectJ 功能更强大，支持更丰富的切点表达式和织入方式，适合复杂的 AOP 场景。
-4. **使用场景**：
-   - 如果切面逻辑简单且数量较少，Spring AOP 足够使用。
-   - 如果切面逻辑复杂或数量较多，建议使用 AspectJ。
-5. **织入时机**：
+   - **AspectJ AOP** 是基于 **编译时增强** 的**字节码操作技术，通过修改字节码实现静态织入**。AspectJ 可以单独使用，也可以与 Spring 集成。
+2. **织入时机**：
    - Spring AOP 是运行时动态织入。
    - AspectJ 支持多种织入时机：
      - **编译期织入**：在编译时修改字节码。如类 A 使用 AspectJ 添加了一个属性，类 B 引用了它，这个场景就需要编译期的时候就进行织入，否则没法编译类 B。
      - **编译后织入**：对已生成的 `.class` 文件或 `.jar` 包进行增强。
      - **类加载后织入**：在类加载时动态增强。
-
+3. **性能对比**：
+   - Spring AOP 是动态代理，运行时会增加方法调用的栈深度，性能稍逊于 AspectJ。
+   - AspectJ 是静态织入，运行时没有额外开销，性能更优，尤其在切面较多时表现更好。
+4. **功能对比**：
+   - Spring AOP 功能相对简单，主要解决企业级开发中常见的方法织入问题。
+   - AspectJ 功能更强大，支持更丰富的切点表达式和织入方式，适合复杂的 AOP 场景。
+5. **使用场景**：
+   - 如果切面逻辑简单且数量较少，Spring AOP 足够使用。
+   - 如果切面逻辑复杂或数量较多，建议使用 AspectJ。
 6. **集成关系**：
    - Spring AOP 已经集成了 AspectJ，开发者可以在 Spring 中同时使用两者。
 
@@ -974,16 +1043,19 @@ public class Client {
 
 ![Spring AOP和AspectJ对比](https://cdn.tobebetterjavaer.com/tobebetterjavaer/images/sidebar/sanfene/spring-d1dbe9d9-c55f-4293-8622-d9759064d613.png)
 
-
-
-### 说说 AOP 和反射的区别？
+### 6.说说 AOP 和反射的区别？
 
 1. 反射：用于检查和操作类的方法和字段，动态调用方法或访问字段。反射是 Java 提供的内置机制，直接操作类对象。
-2. 动态代理：通过生成代理类来拦截方法调用，通常用于 AOP 实现。动态代理使用反射来调用被代理的方法。
+2. 动态代理：**通过生成代理类来拦截方法调用**，通常用于 AOP 实现。动态代理使用反射来调用被代理的方法。
+
+### 7.AOP的使用场景有哪些？日志记录、事务管理、权限控制、性能监控
+
+AOP 的使用场景有很多，比如说**日志记录、事务管理、权限控制**、性能监控等。
 
 # 参考文献
 
 - https://www.cnblogs.com/shenMaQN/p/17748150.html
-
 - https://developer.aliyun.com/article/723070
 - https://blog.csdn.net/Fzyabc/article/details/142882899
+- 沉默王二面渣逆袭
+- 小林coding

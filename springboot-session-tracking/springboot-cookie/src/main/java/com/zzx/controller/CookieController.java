@@ -40,10 +40,9 @@ public class CookieController {
             return Map.of("status", "error", "message", "用户名或密码错误");
         }
 
+        // 创建Cookie
         // 生成随机Session ID
         String sessionId = UUID.randomUUID().toString();
-
-        // 创建Cookie
         Cookie sessionCookie = new Cookie(SESSION_COOKIE_NAME, sessionId);
         sessionCookie.setMaxAge(60); // 15分钟过期（秒）
         sessionCookie.setHttpOnly(true); // 防止客户端脚本访问
